@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="text-center container">
+    <!-- posted reviews total in number -->
+    <section class='my-5 py-5'>
+        <h6 class="fw-bold">0 Reviews posted, Add your review.</h6>
+    </section>
+    <!-- post your review -->
+    <section class="mt-5">
+        <h6 class="my-3 py-2 fw-bold fs-5">Post your review</h6>
+        <form class="d-flex flex-column justify-content-center align-items-center">
+            <textarea name="review" class="p-2" cols="70" rows="10" placeholder='feel free to write ...'></textarea>
+            <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>            
+
+        </form>
+    </section>
+</section>
+{% endblock content %}

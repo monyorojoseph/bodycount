@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+<!-- content block -->
+{% block content %}
+    <section class='my-container'>
+        <!-- add bodycount button -->
+        <div class="text-center">
+            <button class="my-3 fs-6 fw-bold text-capitalize py-1 px-3 my-btn">Add new</button>
+        </div>
+
+        <section id="content">
+
+        </section>
+        
+
+    </section>
+{% endblock content %}
+<!-- javascript block -->
+{% block javascript %}
+<script>
+    $(document).ready(function(){
+    // when page is read, get bodies from the server
+        $.ajax({
+            type: "GET",
+            url: "{% url 'allBodies' %}",
+            dataType: 'json',
+            success: (data)=> {
+                const bodyContainer = $("#content");
+
+                data.forEach((item)=> {
+                    const bodyHTMLElement = `
+                    <h3>Full Name: ${item.fields.full_name}</h3>
+                    `
+                    bodyContainer.append(bodyHTMLElement);
+                });
+            },
+            error: (data)=> {
+                console.log(data)
+            }
+        })
+    })
+// when add body form submits
+
+</script>
+{% endblock javascript %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container">
+    <form action="" class="form">
+        <p class="text-center m-0 py-2">Create account</p>
+        <div class="content">
+            <div >
+                <label for="username">Username</label>
+                <input type="text" placeholder=" create username" name="username">
+            </div>
+            
+            <div >
+                <label for="email">Email</label>
+                <input type="email" placeholder="type your email" name="email">
+            </div>
+            
+            <div >
+                <label for="password">Password</label>
+                <input type="password" placeholder="type your password" name="password">
+            </div>
+
+            <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
+        </div>
+    </form>
+    
+    <p class='text-center'>have an account <a href="#">login</a></p>
+</section>
+{% endblock content %}
