@@ -39,8 +39,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'body.apps.BodyConfig',
-    'account.apps.AccountConfig',
+    'accounts.apps.AccountsConfig',
+
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',    
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration'
 ]
+
+SITE_ID = 1
+
+ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300 # 1 day in seconds
+# ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS =True
+# LOGIN_REDIRECT_URL = '/accounts/email/' # default to /accounts/profile
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +76,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'setup.urls'
 
-AUTH_USER_MODEL = 'account.CustomUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 TEMPLATES = [
     {
@@ -85,6 +107,15 @@ DATABASES = {
     }
 }
 
+# email configuratrion
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# # EMAIL_HOST_USER = #sender's email-id
+# # EMAIL_HOST_PASSWORD = #password associated with above email-id
+# EMAIL_HOST_USER='trackbodycount@gmail.com'
+# EMAIL_HOST_PASSWORD='Jose1999'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

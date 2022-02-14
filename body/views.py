@@ -1,11 +1,12 @@
-from django.shortcuts import render, get_list_or_404
-from django.http import JsonResponse, HttpResponse
-from django.core import serializers
-from django.views import View
+import json
+from datetime import datetime
+from django.shortcuts import render
 from .models import Person, Review
-from .forms import PersonForm, ReviewForm
+from rest_framework.generics import *
+from .serializers import PersonSerializer, ReviewSerializer
 
 # Create your views here.
+
 # is ajax global function
 def is_ajax(request):
     return request.headers.get('x-requested-with') == 'XMLHttpRequest'
@@ -16,36 +17,30 @@ def welcomePage(request):
 
 # home page function view
 def homePage(request):
-        return render(request, "body/home.html")
+    return render(request, "body/home.html")
 
-# all bodies function view
-def allBodies(request):
-    if is_ajax and request.method == "GET":
-        all_bodies = list(Person.objects.all())
-        response = serializers.serialize('json', all_bodies)
-        return HttpResponse(response, content_type='application/json', status=200)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-# add body function view
-def addBody(request):
-    if is_ajax and request.method == "POST":
-        form = PersonForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            response = serializers.serialize('json', instance)
-
-            return HttpResponse(response, status=200, content_type='application/json')
-        return JsonResponse({'error': form.errors}, status=400)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+# Person APIs
+# list bodies API
+class PersonListAPI(ListAPIView):
+    serializer_class = PersonSerializer
+    queryset = Person.objects.all()
+# add body API
+class AddPersonAPI(CreateAPIView):
+    serializer_class = PersonSerializer
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+# view body APi
+class ViewPersonAPI(RetrieveAPIView):
+    serializer_class = PersonSerializer
+    queryset = Person.objects.all()
 
 
+# Review APIs
+# list reviews API
+class ReviewListAPI(ListAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
 
-# create, list and view review class view
-class ReviewClassVIew(View):
-    model = Review
-
-    # get review lists method
-
-    # add review method
-
-    # view review method
+# add review API
+class AddReviewAPI(CreateAPIView):
+    pass

@@ -21,6 +21,9 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("body.urls")),
+    path('user/', include("accounts.urls")),
+    path('rest_auth/', include('rest_auth.urls')),
+    path('rest_auth/registration/', include('rest_auth.registration.urls'))
 ] 
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

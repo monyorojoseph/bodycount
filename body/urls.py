@@ -4,6 +4,8 @@ from .views import *
 urlpatterns = [
     path('welcome', welcomePage, name="welcomePage"),
     path('home/', homePage, name='homePage'),
-    path('all_bodies/', allBodies, name='allBodies'),
-    path('add_body/', addBody, name='addBody'),
+    path('personlistapi/', PersonListAPI.as_view(), name='allBodies'),
+    path('createpersonapi/', AddPersonAPI.as_view(), name='addBody'),
+    path('reviewlistapi/', ReviewListAPI.as_view(), name='allReviews'),
+    path('createreviewapi/', AddReviewAPI.as_view(), name='addReview'),
 ]

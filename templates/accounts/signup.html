@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container">
+    <form action="" class="form" id="signup">
+        <p class="text-center m-0 py-2">Create account</p>
+        <div class="content">
+            <div >
+                <label for="username">Username</label>
+                <input type="text" placeholder=" create username" name="username">
+            </div>
+            
+            <div >
+                <label for="email">Email</label>
+                <input type="email" placeholder="type your email" name="email">
+            </div>
+            
+            <div >
+                <label for="password">Password</label>
+                <input type="password" placeholder="type your password" name="password1">
+            </div>
+
+            <div >
+                <label for="password">Confirm Password</label>
+                <input type="password" placeholder="type your password" name="password2">
+            </div>
+
+            <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
+        </div>
+    </form>
+    
+    <p class='text-center'>have an account <a href="#">login</a></p>
+</section>
+{% endblock content %}
+
+
+{% block javascript %}
+<script>
+    $('#signup').submit(function(e){
+        e.preventDefault()
+
+        var formData = new FormData($(this)[0])
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajax({            
+            type: "POST",
+            url: "{% url 'rest_register' %}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {'X-CSRFToken': csrftoken},
+            success: (response)=> {
+                console.log(response)
+                console.log("yaay bitches")
+            },
+            error: (error)=> {
+                console.log(error)
+                console.log("No bitches")
+
+            }
+
+        })
+
+    })
+</script>
+{% endblock javascript %}

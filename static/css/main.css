@@ -1,5 +1,6 @@
 :root {
     --main-color-tinder: rgb(254, 60, 114);
+    --main-color-tinder-shadow: rgb(254, 60, 114, .1);
     --accent-color-tinder: rgb(66, 66, 66);
     --text-color: rgb(255, 255, 255);
     --sligth-dark: rgb(58,69,79);
@@ -29,7 +30,7 @@ body {
 .header {
     background-color: var(--main-color-tinder);  
 }
-
+.header nav,
 .cover-header nav {    
     display: flex;
     flex-direction: row;
@@ -126,15 +127,8 @@ ul {
 }
 
 
-td img{
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
-}
 
-tr {
-    border-bottom: solid 1px var(--main-color-tinder);
-}
+
 
 .form {
     border: solid 1px rgb(0, 0, 0, .3);
@@ -165,7 +159,7 @@ tr {
 
 form input{
     background-color: inherit;
-    color: var(--text-color);
+    color: var(--main-dark);
     border: solid 1px var(--accent-color-tinder);
     font-size: .9rem;
     padding: 5px 10px;
@@ -278,4 +272,45 @@ textarea {
 tbody tr{
     vertical-align: middle;
     cursor: pointer;
+}
+
+.bodies-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.body-card-container {
+    border: solid 1px var(--muted-text);
+    border-radius: 4px;
+    box-shadow: 1px 1px 3px 3px var(--main-color-tinder-shadow);
+}
+
+.body-card {
+    width: 100%;
+    border-bottom: solid 1px var(--muted-text);
+}
+
+.body-img{
+    height: 85px;
+    width: 85px;
+    border-top-left-radius: 3px;
+}
+
+.body-card-info {
+    /* border: solid 1px; */
+    padding: 5px;
+    margin-left: 5px
+}
+
+.body-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.sm-text {
+    font-size: .8rem;
+    color: var(--muted-text);
 }

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class='container'>
+    <form action="" class="form" id="signin">
+        <p class="text-center m-0 py-2">Login</p>
+        <div class="content">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" placeholder="Email address">
+            </div>
+            
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder='password'>
+            </div>
+
+            <button type="submit" class="my-btn-fill py-1 px-3">Sign In</button>
+        </div>
+    </form>
+    <p class="text-center">don't have an account <a href="#">register</a></p>
+</section>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    $('#signin').submit(function(e){
+        e.preventDefault()
+
+        var formData = new FormData($(this)[0])
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajax({            
+            type: "POST",
+            url: "{% url 'rest_login' %}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {'X-CSRFToken': csrftoken},
+            success: (response)=> {
+                console.log(response)
+                console.log("yaay bitches")
+            },
+            error: (error)=> {
+                console.log(error)
+                console.log("No bitches")
+
+            }
+
+        })
+
+    })
+</script>
+{% endblock javascript %}
