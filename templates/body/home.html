@@ -11,35 +11,48 @@
                 Add new
             </button>
         </div>
+        
         <!-- Modal -->
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <form class="row g-3" id="add-body-form" enctype="multipart/form-data">
+                    <form class="row g-3" method='post' action="{% url 'body:add_person' %}" id="add-body-form" enctype="multipart/form-data">
+                      {% csrf_token %}
                         <div class="col-md-6">
                           <label for="full_name" class="form-label">Full Name</label>
-                          <input type="text" class="form-control" name='full_name'>
+                          {% comment %} <input required type="text" class="form-control" name='full_name'> {% endcomment %}
+                          {{ form.full_name }}
                         </div>
                         <div class="col-md-6">
                           <label for="phone" class="form-label">Phone</label>
-                          <input type="text" class="form-control" name="phone">
+                          {% comment %} <input required type="text" class="form-control" name="phone"> {% endcomment %}
+                          {{ form.phone }}
+                          
                         </div>
                         <div class="col-12">                            
-                            <label for="photo" class="form-label">Upload Photo</label>
-                            <input class="form-control form-control-sm"  type="file" name="photo">
+                          <label for="photo" class="form-label">Upload Photo</label>
+                          {% comment %} <input class="form-control form-control-sm"  type="file" name="photo"> {% endcomment %}
+                          {{ form.photo }}
+
                         </div>
                         <div class="col-md-4">
                           <label for="age" class="form-label">Age</label>
-                          <input type="text" class="form-control" name="age">
+                          {% comment %} <input required type="text" class="form-control" name="age"> {% endcomment %}
+                          {{ form.age }}
+
                         </div>
                         <div class="col-md-4">
                           <label for="location" class="form-label">Location/Town</label>
-                          <input type="text" class="form-control" name='location'>
+                          {% comment %} <input required type="text" class="form-control" name='location'> {% endcomment %}
+                          {{ form.location }}
+
                         </div>
                         <div class="col-md-4">
                           <label for="rating" class="form-label">Rating</label>
-                          <input type="text" class="form-control" name="rating">
+                          {% comment %} <input required type="text" class="form-control" name="rating"> {% endcomment %}
+                          {{ form.rating }}
+
                         </div>
                         <div class="col-12">
                           <button type="submit" class="btn btn-primary">Add</button>
@@ -54,85 +67,23 @@
         </div>
 
         <section id="content" class="mt-3 bodies-container">
-
+          {% for person in persons_list %}
+            <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
+                <div class='body-card d-flex flex-row justify-content-between align-items-center'>
+                    <img class="body-img" src="{{ person.photo_url }}" alt="{{ person.full_name }}" />
+                    <div class='body-card-info'>
+                        <p class="m-0"><span class='sm-text'>age: </span>{{ person.age }} </p>
+                        <p class="m-0"> <span class='sm-text'>Phone: </span> {{ person.phone }} </p>
+                        <p class="m-0"> <span class='sm-text'>Rating: </span> {{ person.rating }} </p>
+                    </div>
+                </div
+                <h4> {{ person.full_name }} </h4>
+            </div>
+          {% empty %}
+            <p class="text-center">You haven't added a peson you banged !! </p>
+          {% endfor %}
         </section>
          
 
     </section>
 {% endblock content %}
-<!-- javascript block -->
-{% block javascript %}
-<script>
-    $(document).ready(function(){
-    // when page is read, get bodies from the server
-        $.ajax({
-            type: "GET",
-            url: "{% url 'allBodies' %}",
-            dataType: 'json',
-            success: (data)=> {
-                const bodyContainer = $("#content");
-
-
-                data.forEach((item)=> {
-                    const bodyHTMLElement = `
-                    <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
-                        <div class='body-card d-flex flex-row justify-content-between align-items-center'>
-                            <img class="body-img" src=${item.photo} alt=${item.full_name} />
-                            <div class='body-card-info'>
-                                <p class="m-0"><span class='sm-text'>age: </span>${item.age}</p>
-                                <p class="m-0"> <span class='sm-text'>Phone: </span> ${item.phone}</p>
-                                <p class="m-0"> <span class='sm-text'>Rating: </span> ${item.rating}</p>
-                            </div>
-                        </div
-                        <h4>${item.full_name}</h4>
-                    </div>
-                    `
-                    bodyContainer.append(bodyHTMLElement);
-                });
-            },
-            error: (data)=> {
-                console.log(data)
-            }
-        })
-    })
-
-    // submitting form
-    $('#add-body-form').submit(function(e){
-        e.preventDefault();
-
-        var formData = new FormData($(this)[0]);
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        const csrftoken = getCookie('csrftoken');
-
-        $.ajax({
-            type: "POST",
-            url: "{% url 'addBody' %}",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {'X-CSRFToken': csrftoken},
-            success: (response)=>{
-                console.log("yaay bitches")
-            },
-            error: (error)=>{
-                console.log("Looser")
-            }
-        })
-    })
-</script>
-{% endblock javascript %}

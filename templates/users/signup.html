@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container">
+    <form action="{% url 'users:registration' %}" method='post' class="form" id="signup">
+        {% csrf_token %}
+        <p class="text-center m-0 py-2">Create account</p>
+        <div class="content">
+            {{ form }}
+            {% comment %} <div >
+                <label for="username">Username</label>
+                <input type="text" placeholder=" create username" name="username">
+            </div>
+            
+            <div >
+                <label for="email">Email</label>
+                <input type="email" placeholder="type your email" name="email">
+            </div>
+            
+            <div >
+                <label for="password1">Password</label>
+                <input type="password" placeholder="type your password" name="password1">
+            </div>
+
+            <div >
+                <label for="password2">Confirm Password</label>
+                <input type="password" placeholder="type your password" name="password2">
+            </div> {% endcomment %}
+
+            <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
+        </div>
+    </form>
+    
+    <p class='text-center'>have an account <a href="{% url 'users:signin' %}">login</a></p>
+</section>
+{% endblock content %}

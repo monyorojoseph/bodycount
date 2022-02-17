@@ -2,18 +2,34 @@
 
 {% block content %}
 <section class="text-center container">
-    <!-- posted reviews total in number -->
-    <section class='my-5 py-5'>
-        <h6 class="fw-bold">0 Reviews posted, Add your review.</h6>
-    </section>
-    <!-- post your review -->
-    <section class="mt-5">
-        <h6 class="my-3 py-2 fw-bold fs-5">Post your review</h6>
-        <form class="d-flex flex-column justify-content-center align-items-center">
-            <textarea name="review" class="p-2" cols="70" rows="10" placeholder='feel free to write ...'></textarea>
-            <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>            
+    <!-- posted reviews total in number post review -->
+    <section class='my-4 py-4'>
+        <h6 class="fw-bold">{{ total_reviews }} 
+            Reviews posted.
+            <button class="btn btn-outline-primary bt-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Post your review
+            </button
+        </h6>
 
-        </form>
+          <div class="collapse mt-2" id="collapseExample">
+            <div class="card card-body">
+                <form  method='post' action="{% url 'body:add_review' %}" id="add-review-form" class='d-flex flex-column justify-content-center align-items-center' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.comments }}
+                    <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
+                </form>
+            </div>
+          </div>
     </section>
+    <!-- review list -->
+    <section>
+        {% for review in review_list  %}
+            <div>
+                <h6>{{ review.user.username }}</h6>
+                <p>{{ review.comments }}</p>
+            </div>
+        {% endfor %}
+    </section>
+
 </section>
 {% endblock content %}

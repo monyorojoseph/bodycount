@@ -1,46 +1,70 @@
-import json
-from datetime import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from .models import Person, Review
-from rest_framework.generics import *
-from .serializers import PersonSerializer, ReviewSerializer
+from .forms import PersonForm, ReviewForm
 
-# Create your views here.
+# home view
+def welcome(request):
+    return render(request, 'welcome.html')
+@login_required
+def home(request):
+    form = PersonForm()
+    persons_list = Person.objects.filter(user=request.user)
+    context = {
+        "form": form,
+        "persons_list":persons_list
+    }
+    return render(request, 'body/home.html', context)
 
-# is ajax global function
-def is_ajax(request):
-    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
-
-# welcome view
-def welcomePage(request):
-    return render(request, "welcomePage.html")
-
-# home page function view
-def homePage(request):
-    return render(request, "body/home.html")
-
-# Person APIs
-# list bodies API
-class PersonListAPI(ListAPIView):
-    serializer_class = PersonSerializer
-    queryset = Person.objects.all()
-# add body API
-class AddPersonAPI(CreateAPIView):
-    serializer_class = PersonSerializer
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-# view body APi
-class ViewPersonAPI(RetrieveAPIView):
-    serializer_class = PersonSerializer
-    queryset = Person.objects.all()
+# add body
+@login_required
+def add_person(request):
+    if request.method == "POST":
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            user = request.user
+            Person.objects.create(
+                user=user,
+                full_name=request.POST['full_name'],
+                photo=request.FILES['photo'],                
+                phone=request.POST['phone'],                
+                age=request.POST['age'],                
+                location=request.POST['location'],                
+                rating=request.POST['rating']
+            )
+            return redirect('body:home')
+        return HttpResponse("Invalid form data")
+    return HttpResponse("Invalid request")
 
 
-# Review APIs
-# list reviews API
-class ReviewListAPI(ListAPIView):
-    serializer_class = ReviewSerializer
-    queryset = Review.objects.all()
+# view body details
+@login_required
+def view_person(request):
+    context = {}
+    return render(request, 'body/home.html', context)
 
-# add review API
-class AddReviewAPI(CreateAPIView):
-    pass
+
+# review views
+def reviews(request):
+    review_list = Review.objects.all()
+    total_reviews = Review.objects.all().count()
+    form = ReviewForm()
+    context = {
+        "review_list": review_list,
+        "form": form,
+        "total_reviews": total_reviews
+    }
+    return render(request, 'body/reviews.html', context)
+
+@login_required
+def add_review(request):
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        print(request.POST, form.is_valid())
+        if form.is_valid():
+            Review.objects.create(user=request.user, comments=request.POST['comments'])
+            return redirect('body:reviews')
+        return HttpResponse("Invalid form data")
+    return HttpResponse("Invalid request")

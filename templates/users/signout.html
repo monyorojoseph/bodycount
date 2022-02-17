@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class='container'>
+    <h3>Signed out</h3>
+    <p class="text-center">sign in again  ? <a href="{% url 'users:signin' %}">sign in</a></p>
+</section>
+{% endblock content %}
