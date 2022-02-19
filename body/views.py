@@ -3,10 +3,19 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Person, Review
 from .forms import PersonForm, ReviewForm
+from users.forms import UserCreationForm
 
 # home view
 def welcome(request):
-    return render(request, 'welcome.html')
+    form = UserCreationForm()
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('users:signin')
+    context = {"form": form}    
+    return render(request, 'welcome.html', context)
+    
 @login_required
 def home(request):
     form = PersonForm()

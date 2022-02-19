@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <section class="container">
@@ -6,26 +8,29 @@
         {% csrf_token %}
         <p class="text-center m-0 py-2">Create account</p>
         <div class="content">
-            {{ form }}
-            {% comment %} <div >
+            <div >
                 <label for="username">Username</label>
-                <input type="text" placeholder=" create username" name="username">
+                {% comment %} <input type="text" placeholder=" create username" name="username"> {% endcomment %}
+                {{ form.username|add_class:"form-control"}}
             </div>
             
             <div >
                 <label for="email">Email</label>
-                <input type="email" placeholder="type your email" name="email">
+                {% comment %} <input type="email" placeholder="type your email" name="email"> {% endcomment %}
+                {{ form.email|add_class:"form-control"}}
             </div>
             
             <div >
                 <label for="password1">Password</label>
-                <input type="password" placeholder="type your password" name="password1">
+                {% comment %} <input type="password" placeholder="type your password" name="password1"> {% endcomment %}
+                {{ form.password1|add_class:"form-control"}}
             </div>
 
             <div >
                 <label for="password2">Confirm Password</label>
-                <input type="password" placeholder="type your password" name="password2">
-            </div> {% endcomment %}
+                {% comment %} <input type="password" placeholder="type your password" name="password2"> {% endcomment %}
+                {{ form.password2|add_class:"form-control"}}
+            </div>
 
             <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
         </div>

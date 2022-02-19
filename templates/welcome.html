@@ -1,17 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 <!-- attaching block content -->
 {% block content %}
-    <section class="container mt-5 text-center">
-        <!-- welcome message -->
-        <div class="my-4">
-            <h4 class="my-4 text-capitalize" >Welcome</h4>
-            <p>I help humans with high sex drive like myself, who loves having sex with diffrent humans, to track their bodycounts.</p>
-            <p>Personally I lost track of my bodycount which is sad, so I decided to make this web app to help my fellow humans not lose track of their bodycount.</p>
+    <section class="container mt-3 ">
+        <div class='row'>
+            <!-- welcome message -->
+            <div class=" col">
+                <h4 class="my-4 text-capitalize" >Welcome</h4>
+                <p>I help humans with high sex drive like myself, who loves having sex with diffrent humans, to track their bodycounts.</p>
+                <p>Personally I lost track of my bodycount which is sad, so I decided to make this web app to help my fellow humans not lose track of their bodycount.</p>
+            </div>
+            <!-- sign up and sign in buttons -->
+            <div class=" col">
+                <form action="{% url 'users:registration' %}" method='post' class="form" id="signup">
+                    {% csrf_token %}
+                    <div >
+                        <label for="username">Username</label>
+                        {{ form.username|add_class:"form-control"}}
+                    </div>
+                    
+                    <div >
+                        <label for="email">Email</label>
+                        {{ form.email|add_class:"form-control"}}
+                    </div>
+                    
+                    <div >
+                        <label for="password1">Password</label>
+                        {{ form.password1|add_class:"form-control"}}
+                    </div>
+        
+                    <div >
+                        <label for="password2">Confirm Password</label>
+                        {{ form.password2|add_class:"form-control"}}
+                    </div>
+                    
+                    <div class='d-grid gap-2 mt-3'>
+                        <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
+                    </div>
+                </form>
+                
+                <p class='text-center'>have an account <a href="{% url 'users:signin' %}">login</a></p>
+            </div>
         </div>
-        <!-- sign up and sign in buttons -->
-        <button class="my-btn py-1 px-3 mx-3">Sign Up</button>
-        <p class="mt-2 text-center text-muted">Don't be ashamed !!!!!</p>
+        
     </section>
 {% endblock content %}

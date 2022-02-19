@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <section class='container'>
@@ -8,17 +10,26 @@
         <div class="content">
             <div>
                 <label for="email">Email</label>
-                <input type="email" name="email" placeholder="Email address">
+                <input class="form-control" type="email" name="email" placeholder="Email address">
             </div>
             
             <div>
                 <label for="password">Password</label>
-                <input type="password" name="password" placeholder='password'>
+                <input class="form-control" type="password" name="password" placeholder='password'>
             </div>
+
+            <script src="https://www.google.com/recaptcha/api.js"
+              async defer>
+            </script>
+
+            <div class="g-recaptcha" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
 
             <button type="submit" class="my-btn-fill py-1 px-3">Sign In</button>
         </div>
     </form>
-    <p class="text-center">don't have an account <a href="{% url 'users:registration' %}">register</a></p>
+    <script src="https://www.google.com/recaptcha/api.js"
+        async defer>
+    </script>
+    <p class="text-center">Forgot password ? <a href="{% url 'users:password_reset' %}">reset password</a></p>
 </section>
 {% endblock content %}

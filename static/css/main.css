@@ -132,34 +132,16 @@ body {
 }
 
 
-
-
-
 .form {
     border: solid 1px rgb(0, 0, 0, .3);
     border-radius: 3px;
     margin: 50px auto;
     margin-bottom: 10px;
     width: 350px;
-}
-
-.form .content{
     padding: 20px;
 }
 
-.form div{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-}
 
-.form p{
-    /* background-color: rgb(241, 93, 142); */
-    background-color: var(--main-color-tinder);
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    color: var(--text-color);
-}
 
 
 form input{
@@ -220,34 +202,26 @@ textarea {
     outline: none;
 }
 
-.profile-img{
-    height: 150px;
-    width: 150px;
-    border-radius: 50%;
-    margin-right: 20px;
-}
 
 .profile-container{
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: flex-start;
 }
 
-.info-img{
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-evenly;
-    align-items: center;
+.info1{
     border: solid 1px rgb(0, 0, 0, .3);
     border-radius: 3px;
     padding: 20px;
+    margin: 0 10px;
 }
 
-.info-extra{
+.info2{
     border: solid 1px rgb(0, 0, 0, .3);
     border-radius: 3px;
     padding: 20px;
+    margin: 0 10px;
 
 }
 
@@ -256,23 +230,16 @@ textarea {
         flex-direction: column;
     }
     
-    .info-img {
+    .info1 {
         margin-bottom: 10px;
     }
 
-    .info-img,
-    .info-extra {
+    .info2,
+    .info1 {
         width: 100%;
     }
 }
 
-@media only screen and (max-width: 770px){
-    .profile-img{
-        height: 120px;
-        width: 120px;
-        margin-right: 20px;
-    }
-}
 
 tbody tr{
     vertical-align: middle;

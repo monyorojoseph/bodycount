@@ -11,4 +11,4 @@ class PersonForm(ModelForm):
 class ReviewForm(ModelForm):
     class Meta:
         model = Review
-        fields = ['comments']
+        fields = ['review_text']

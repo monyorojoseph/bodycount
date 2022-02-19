@@ -22,6 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-k^x%_*0=p%fd&6j@r2%gc7&4t9p#l(huhgltyx#hl!p*r6iqvu'
 
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LdnuYweAAAAAEaj1Jl3af03GAdOqSE7Uz_ZE_YO'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,6 +42,8 @@ INSTALLED_APPS = [
 
     'body.apps.BodyConfig',
     'users.apps.UsersConfig',
+
+    'widget_tweaks',
 ]
 
 

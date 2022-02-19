@@ -1,35 +1,29 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <section class="container">
-    <!-- personal profile head / title -->
-    <h5 class='text-center text-capitalize'>Profile</h5>
     <!-- personal information -->
     <div class="profile-container my-5">
-        <div class='info-img'>
-            <div>                    
-                <!-- personal/first name -->
-                <p>Personal name :- <span>Kylie</span></p>
-                <!-- username -->
-                <p>Username :- <span>bandit</span> </p>
-                <!-- email -->
-                <p>Email :- <span>bandit@gmail.com</span></p>  
-                <!-- age -->
-                <p>Age :- <span>23</span></p>
-            </div>
-            <!-- image -->
-            <img src="/track bdc/images/juliet.jpg" class='profile-img' alt="profile photo" srcset="">
+        <div class='info1'>
+            <!-- personal/first name -->
+            <p>Username :- <span>{{ profile_details.username}}</span></p>
+            <!-- email -->
+            <p>Email :- <span>{{ profile_details.email }}</span></p>  
+            <!-- age -->
+            <p>Age :- <span>{{profile_details.age }}</span></p>
+            <!-- sex -->
+            <p>Sex :- <span>{{profile_details.sex}}</span></p>
         </div>
 
-        <div class='info-extra'>                                  
-            <!-- sex -->
-            <p>Sex :- <span>male</span></p>
+        <div class='info2'>                                  
             <!-- sexuality -->
-            <p>Sexuality :- <span>straigth</span></p>
+            <p>Sexuality :- <span>{{profile_details.sexuality}}</span></p>
             <!-- target -->
-            <p>Bodycount target :- <span>40</span></p>
+            <p>Bodycount target :- <span>{{profile_details.target}}</span></p>
             <!-- favourite porn -->
-            <p>Favourite Porn :- <span>Lesbian</span></p>
+            <p>Favourite Porn :- <span>{{profile_details.favourite_porn}}</span></p>
             <!-- fetish -->
             <P>Fetish :- <span>baby mamas</span></P>
         </div>

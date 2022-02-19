@@ -18,22 +18,46 @@ class Person(models.Model):
 
     class Meta:
         ordering = ['-id']
+        verbose_name = 'Person'
+
     
     def __str__(self):
         return str(self.full_name)
     
     def photo_url(self):
         return self.photo.url
-    
-
-
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    comments = models.TextField()
+    review_text = models.TextField()
 
     class Meta:
         ordering = ['-id']
+        verbose_name = 'Review'
+
 
     def __str__(self):
-        return str(self.user)    
+        return str(self.user.username)    
+
+class Reply(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    repy_text = models.TextField()
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Reply'
+
+    def __str__(self):
+        return str(self.user.username)  
+
+
+class Votes(models.Model):
+    vote_title = models.CharField(max_length=200)
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'Votes'
+
+    def __str__(self):
+        return self.vote_title  

@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <section class="text-center container">
@@ -6,20 +8,21 @@
     <section class='my-4 py-4'>
         <h6 class="fw-bold">{{ total_reviews }} 
             Reviews posted.
-            <button class="btn btn-outline-primary bt-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <button class="btn btn-link btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#reviewCollapse" aria-expanded="false" aria-controls="reviewCollapse">
                 Post your review
             </button
         </h6>
 
-          <div class="collapse mt-2" id="collapseExample">
+          <div class="collapse mt-2" id="reviewCollapse">
             <div class="card card-body">
                 <form  method='post' action="{% url 'body:add_review' %}" id="add-review-form" class='d-flex flex-column justify-content-center align-items-center' enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.comments }}
+                    {{ form.review_text|add_class:"form-control" }}
                     <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
                 </form>
             </div>
           </div>
+          
     </section>
     <!-- review list -->
     <section>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 <!-- content block -->
 {% block content %}
@@ -16,52 +17,47 @@
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-body">
-                    <form class="row g-3" method='post' action="{% url 'body:add_person' %}" id="add-body-form" enctype="multipart/form-data">
-                      {% csrf_token %}
-                        <div class="col-md-6">
-                          <label for="full_name" class="form-label">Full Name</label>
-                          {% comment %} <input required type="text" class="form-control" name='full_name'> {% endcomment %}
-                          {{ form.full_name }}
-                        </div>
-                        <div class="col-md-6">
-                          <label for="phone" class="form-label">Phone</label>
-                          {% comment %} <input required type="text" class="form-control" name="phone"> {% endcomment %}
-                          {{ form.phone }}
-                          
-                        </div>
-                        <div class="col-12">                            
-                          <label for="photo" class="form-label">Upload Photo</label>
-                          {% comment %} <input class="form-control form-control-sm"  type="file" name="photo"> {% endcomment %}
-                          {{ form.photo }}
+              <div class="modal-body">
+                  <form class="row g-3" method='post' action="{% url 'body:add_person' %}" id="add-body-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                      <div class="col-md-6">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        {{ form.full_name|add_class:"form-control" }}
+                      </div>
+                      <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone</label>
+                        {{ form.phone|add_class:"form-control" }}
+                        
+                      </div>
+                      <div class="col-12">                            
+                        <label for="photo" class="form-label">Upload Photo</label>
+                        {{ form.photo|add_class:"form-control" }}
 
-                        </div>
-                        <div class="col-md-4">
-                          <label for="age" class="form-label">Age</label>
-                          {% comment %} <input required type="text" class="form-control" name="age"> {% endcomment %}
-                          {{ form.age }}
+                      </div>
+                      <div class="col-md-4">
+                        <label for="age" class="form-label">Age</label>
+                        {{ form.age|add_class:"form-control" }}
 
-                        </div>
-                        <div class="col-md-4">
-                          <label for="location" class="form-label">Location/Town</label>
-                          {% comment %} <input required type="text" class="form-control" name='location'> {% endcomment %}
-                          {{ form.location }}
+                      </div>
+                      <div class="col-md-4">
+                        <label for="location" class="form-label">Location/Town</label>
+                        {{ form.location|add_class:"form-control" }}
 
-                        </div>
-                        <div class="col-md-4">
-                          <label for="rating" class="form-label">Rating</label>
-                          {% comment %} <input required type="text" class="form-control" name="rating"> {% endcomment %}
-                          {{ form.rating }}
+                      </div>
+                      <div class="col-md-4">
+                        <label for="rating" class="form-label">Rating</label>
+                        {{ form.rating|add_class:"form-control" }}
 
-                        </div>
-                        <div class="col-12">
-                          <button type="submit" class="btn btn-primary">Add</button>
-                        </div>
-                      </form>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
+                      </div>
+                      <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-outline-success">Add</button>
+                      </div>
+                    </form>
+                    <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+              </div>
             </div>
             </div>
         </div>

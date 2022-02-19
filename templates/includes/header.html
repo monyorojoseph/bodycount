@@ -15,6 +15,9 @@
             </li>
             {% if request.user.is_authenticated %}
             <li>
+                <a href="{% url 'users:view_profile' %}">Profile</a>
+            </li>
+            <li>
                 <a href="{% url 'users:signout' %}">Sign Out</a>
             </li>
             {% else %}
