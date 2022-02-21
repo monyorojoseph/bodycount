@@ -6,7 +6,7 @@
 <section class='container'>
     <form action="{% url 'users:signin' %}" method='post' class="form" id="signin">
         {% csrf_token %}
-        <p class="text-center m-0 py-2">Login</p>
+        <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome Back</p>
         <div class="content">
             <div>
                 <label for="email">Email</label>
@@ -22,14 +22,13 @@
               async defer>
             </script>
 
-            <div class="g-recaptcha" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
+            <div class="g-recaptcha mt-3" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
 
-            <button type="submit" class="my-btn-fill py-1 px-3">Sign In</button>
+            <div class='d-grid gap-2 mt-3'>
+                <button type="submit" class="my-btn-fill py-1 px-3">Sign In</button>
+            </div>
         </div>
     </form>
-    <script src="https://www.google.com/recaptcha/api.js"
-        async defer>
-    </script>
     <p class="text-center">Forgot password ? <a href="{% url 'users:password_reset' %}">reset password</a></p>
 </section>
 {% endblock content %}

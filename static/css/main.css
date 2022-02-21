@@ -23,78 +23,40 @@ body {
     margin: 0;
 }
 
+
 .cover-page {
     background: linear-gradient(-90deg, var(--main-dark) 50%, var(--sligth-dark) 80%);
     color: var(--text-color);
 }
-
-.my-header {
-    background-color: inherit;
+.colored-header{
+    background-color: var(--main-color-tinder);
+    color: var(--text-color);
 }
 
-.my-header a {
-    text-decoration: none;
-    color: inherit;
+.navbar-brand:focus,
+.navbar-brand:hover,
+.navbar-brand,
+.nav-link{
+    color: var(--text-color);
 }
 
+.nav-link:focus,
+.nav-link:hover{
+    color: var(--accent-color-tinder);
+}
+.nav-link
 
-.my-header nav {    
+.my-nav {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    width: 70%;
-    margin: 0 auto;
-
 }
 
-.my-header h5{
-    font-size: 1.5rem;
-}
-.my-header ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
-.my-header li{
-    color: var(--main-dark);
-    cursor: pointer;
-    font-weight: 600;
-    display: block;
-    margin: 0 10px;
-    padding-bottom: 5px;
-}
-
-.my-header li:hover{
-    border-bottom: solid 3px;
-    color: var(--main-dark);
-}
-
-@media only screen and (max-width: 950px) {
-    .my-header nav {
-        width: 80%;
-    }
-}
-
-@media only screen and (max-width: 800px) {
-    .my-header nav {
+@media only screen and (max-width: 765px) {
+    .my-nav {
         flex-direction: column;
-    }
-
-    .my-header ul {
-        margin-top: 10px;
-    }
-}
-
-@media only screen and (max-width: 500px) {
-    .my-header nav {
-        width: 90%;
+        justify-content: center;
     }
 }
 
@@ -286,4 +248,57 @@ tbody tr{
 .sm-text {
     font-size: .8rem;
     color: var(--muted-text);
+}
+
+.review {
+    border-radius: 3px;
+    border: solid 1px var(--muted-text);
+    width: 300px;
+    text-align: start;
+}
+.name-ts {
+    border-bottom: solid 1px var(--muted-text);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.name,
+.ts{
+    margin: 0;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.ts{
+    font-size: .7rem;
+    color: var(--muted-text);
+}
+
+.review_text {
+    padding: 10px 15px;
+}
+
+.review_section {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    align-items: flex-start;
+    grid-gap: 10px;
+}
+
+@media only screen and (max-width: 1000px) {    
+    .review_section {
+        grid-template-columns: auto auto;
+    } 
+}
+
+@media only screen and (max-width: 650px) {    
+    .review_section {
+        grid-template-columns: auto;
+    } 
+    .review{
+        width: 350px;
+    }
 }

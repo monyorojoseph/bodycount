@@ -14,7 +14,7 @@ class Person(models.Model):
     age = models.CharField(max_length=5, null=True, blank=True)
     location = models.CharField(max_length=200, null=True, blank=True)
     rating = models.CharField(max_length=200, null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now())
+    pub_date = models.DateTimeField(default=timezone.now())
 
     class Meta:
         ordering = ['-id']
@@ -30,9 +30,11 @@ class Person(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     review_text = models.TextField()
+    pub_date = models.DateTimeField(default=timezone.now())
+
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-pub_date']
         verbose_name = 'Review'
 
 
@@ -43,9 +45,11 @@ class Reply(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     repy_text = models.TextField()
+    pub_date = models.DateTimeField(default=timezone.now())
+
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-pub_date']
         verbose_name = 'Reply'
 
     def __str__(self):

@@ -5,17 +5,19 @@
 <!-- attaching block content -->
 {% block content %}
     <section class="container mt-3 ">
-        <div class='row'>
+        <div class='row row-cols-1 row-cols-sm-1 row-cols-md-2'>
             <!-- welcome message -->
-            <div class=" col">
+            <div class="col">
                 <h4 class="my-4 text-capitalize" >Welcome</h4>
                 <p>I help humans with high sex drive like myself, who loves having sex with diffrent humans, to track their bodycounts.</p>
                 <p>Personally I lost track of my bodycount which is sad, so I decided to make this web app to help my fellow humans not lose track of their bodycount.</p>
             </div>
             <!-- sign up and sign in buttons -->
-            <div class=" col">
+            <div class="col">
                 <form action="{% url 'users:registration' %}" method='post' class="form" id="signup">
                     {% csrf_token %}
+                    <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome don't be shy</p>
+
                     <div >
                         <label for="username">Username</label>
                         {{ form.username|add_class:"form-control"}}

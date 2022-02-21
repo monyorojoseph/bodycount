@@ -12,6 +12,9 @@ from django.contrib import messages
 
 # account creation
 def registration(request):
+    if request.user.is_authenticated:
+        return redirect('body:home')
+
     form = UserCreationForm()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -23,6 +26,9 @@ def registration(request):
 
 # signin
 def signin(request):
+    if request.user.is_authenticated:
+        return redirect('body:home')
+
     if request.method == "POST":
         recaptcha_response = request.POST.get('g-recaptcha-response')
         data = {
@@ -35,12 +41,14 @@ def signin(request):
             email = request.POST['email']
             password = request.POST['password']
             user = authenticate(request, email=email, password=password)
+            
+            request.session['password'] = "test123"
+
             if user is not None:
                 login(request, user)
                 return redirect("body:home")
         else:
             messages.error(request, 'Invalid reCAPTCHA. Please try again.')
-
     return render(request, 'users/signin.html')
 
 # signout

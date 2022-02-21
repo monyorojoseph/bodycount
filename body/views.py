@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Person, Review
@@ -7,17 +7,25 @@ from users.forms import UserCreationForm
 
 # home view
 def welcome(request):
+
+    if request.user.is_authenticated:
+        return redirect('body:home')
+
     form = UserCreationForm()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
+        
         if form.is_valid():
             form.save()
             return redirect('users:signin')
-    context = {"form": form}    
+    context = {"form": form} 
+
+    request.session.set_test_cookie()
+   
     return render(request, 'welcome.html', context)
     
 @login_required
-def home(request):
+def home(request):  
     form = PersonForm()
     persons_list = Person.objects.filter(user=request.user)
     context = {
@@ -32,7 +40,6 @@ def add_person(request):
     if request.method == "POST":
         form = PersonForm(request.POST)
         if form.is_valid():
-            print(request.POST)
             user = request.user
             Person.objects.create(
                 user=user,
@@ -71,9 +78,8 @@ def reviews(request):
 def add_review(request):
     if request.method == "POST":
         form = ReviewForm(request.POST)
-        print(request.POST, form.is_valid())
         if form.is_valid():
-            Review.objects.create(user=request.user, comments=request.POST['comments'])
+            Review.objects.create(user=request.user, review_text=request.POST['review_text'])
             return redirect('body:reviews')
         return HttpResponse("Invalid form data")
     return HttpResponse("Invalid request")

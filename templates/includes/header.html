@@ -1,28 +1,32 @@
 <!-- header or navbar -->
-<header class='my-header'>
-    <nav>
-        <!-- logo name -->
-        <h5><a href="{% url 'body:home' %}">Track Bodycount</a></h5>
-        
-        <!-- menu -->
-        <ul>
+{% if request.user.is_authenticated %}
+<header class='py-2 colored-header'>
+{% else %}
+<header class="py-2">
+{% endif %}
+    <nav class="container navbar my my-nav fs-6">
+        <div class="mb-2 text-center">
+          <a class="navbar-brand" href="{% url 'body:home' %}">Track Bodycount</a>
+        </div>
+
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'body:home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'body:reviews' %}">Reviews</a>
+            </li>
             
-            <li> 
-                <a href="{% url 'body:home' %}">Home</a>
-            </li>
-            <li>
-                <a href="{% url 'body:reviews' %}">Reviews</a>
-            </li>
             {% if request.user.is_authenticated %}
-            <li>
-                <a href="{% url 'users:view_profile' %}">Profile</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:view_profile' %}">Account</a>
             </li>
-            <li>
-                <a href="{% url 'users:signout' %}">Sign Out</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:signout' %}">Sign Out</a>
             </li>
             {% else %}
-            <li>
-                <a href="{% url 'users:signin' %}">Sign In</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:signin' %}">Sign In</a>
             </li>
             {% endif %}
     </nav>

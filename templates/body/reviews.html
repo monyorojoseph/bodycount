@@ -25,11 +25,14 @@
           
     </section>
     <!-- review list -->
-    <section>
+    <section class='review_section'>
         {% for review in review_list  %}
-            <div>
-                <h6>{{ review.user.username }}</h6>
-                <p>{{ review.comments }}</p>
+            <div class='review'>
+                <div class='name-ts'>
+                    <h6 class='name'>@{{ review.user.username }}</h6>
+                    <p class='ts'>{{review.pub_date|date:"d M Y"}}</p>
+                </div>
+                <p class='review_text'>{{ review.review_text }}</p>
             </div>
         {% endfor %}
     </section>
