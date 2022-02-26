@@ -1,30 +1,42 @@
 import requests
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render
 from .models import Profile
-from .forms import ProfileForm, UserCreationForm
+from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib import messages
 
 # Create your views here.
 
-# account creation
-def registration(request):
-    if request.user.is_authenticated:
-        return redirect('body:home')
+"""
+    Authentication view: registration, sign in, sign out, closing account
 
-    form = UserCreationForm()
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('users:signin')
-    context = {"form": form}    
-    return render(request, 'users/signup.html', context)
+"""
 
-# signin
+# registration
+# def registration(request):
+#     if request.user.is_authenticated:
+#         return redirect('body:home')
+
+#     form = UserCreationForm()
+#     if request.method == "POST":
+#         form = UserCreationForm(request.POST)        
+#         email = request.POST['email']
+#         password = request.POST['password1']
+
+#         if form.is_valid():
+#             form.save()
+#             user = authenticate(email=email, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 return JsonResponse({"message":"User created successfully"}, status=200)
+#         return JsonResponse({"message":"Invalid from"}, status = 400)  # modify later to return form errors
+#     context = {"form": form}    
+#     return render(request, 'users/signup.html', context)
+
+# sign in
 def signin(request):
     if request.user.is_authenticated:
         return redirect('body:home')
@@ -42,13 +54,11 @@ def signin(request):
             password = request.POST['password']
             user = authenticate(request, email=email, password=password)
             
-            request.session['password'] = "test123"
-
             if user is not None:
                 login(request, user)
-                return redirect("body:home")
+
         else:
-            messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+            return JsonResponse({"message":"Invalid reCAPTCHA. Please try again."}, status = 400)
     return render(request, 'users/signin.html')
 
 # signout
@@ -56,14 +66,20 @@ def signout(request):
     logout(request)
     return render(request, 'users/signout.html')
 
+# account removal
 def close_account(request):
     pass
 
-# profile, view and edit
+"""
+    profile view: view profile, edit profile
+
+"""
+
+# edit profile details
 @login_required
 def edit_profile(request):
-    user = request.user
-    profile = get_object_or_404(Profile, user=user)
+    profile = Profile.objects.get(user=request.user)
+
     if request.method == "POST":
         profile.email = request.POST['email']
         profile.username = request.POST['username']
@@ -77,7 +93,7 @@ def edit_profile(request):
         return redirect('users:profile')
     return HttpResponse("Invalid request")
  
-
+# view profile details
 @login_required
 def view_profile(request):
     profile_details = Profile.objects.get(user=request.user)

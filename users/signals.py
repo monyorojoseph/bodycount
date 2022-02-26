@@ -5,6 +5,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
+"""
+    create profile on user registration and update user email and username on updating profile email and username
+
+"""
+
 def create_profile(sender, instance, created, **kwargs):
     user = instance
     if created:

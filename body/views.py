@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import JsonResponse
 from .models import Person, Review
 from .forms import PersonForm, ReviewForm
 from users.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 
+
+"""
+    Landing page also has sign up form
+"""
 # home view
 def welcome(request):
 
@@ -12,17 +17,33 @@ def welcome(request):
         return redirect('body:home')
 
     form = UserCreationForm()
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'POST' and is_ajax:
+        form = UserCreationForm(request.POST)        
+        email = request.POST['email']
+        password = request.POST['password1']
+
+        if request.session.test_cookie_worked():
+            request.session['email'] = email
+
         if form.is_valid():
             form.save()
-            return redirect('users:signin')
+            user = authenticate(email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({"message":"User created successfully"}, status = 200)
+        # else return form errors in json response
     context = {"form": form} 
 
     request.session.set_test_cookie()
    
     return render(request, 'welcome.html', context)
+
+"""
+    Home page displays all bodies that have been added
+"""
     
 @login_required
 def home(request):  
@@ -37,7 +58,10 @@ def home(request):
 # add body
 @login_required
 def add_person(request):
-    if request.method == "POST":
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'POST' and is_ajax:
         form = PersonForm(request.POST)
         if form.is_valid():
             user = request.user
@@ -50,9 +74,11 @@ def add_person(request):
                 location=request.POST['location'],                
                 rating=request.POST['rating']
             )
-            return redirect('body:home')
-        return HttpResponse("Invalid form data")
-    return HttpResponse("Invalid request")
+            return JsonResponse({
+                "message": "Person added successfully"
+            }, status=200)
+        return JsonResponse({"message":"Invalid form data"}, status=400)
+    return JsonResponse({"message":"Invalid request"}, status=400)
 
 
 # view body details
@@ -81,5 +107,5 @@ def add_review(request):
         if form.is_valid():
             Review.objects.create(user=request.user, review_text=request.POST['review_text'])
             return redirect('body:reviews')
-        return HttpResponse("Invalid form data")
-    return HttpResponse("Invalid request")
+        return JsonResponse({"message":"Invalid form data"}, status=400)
+    return JsonResponse({"message":"Invalid request"}, status=400)

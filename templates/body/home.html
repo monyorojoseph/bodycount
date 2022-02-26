@@ -18,40 +18,43 @@
             <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-body">
-                  <form class="row g-3" method='post' action="{% url 'body:add_person' %}" id="add-body-form" enctype="multipart/form-data">
-                    {% csrf_token %}
+                    <form class="row g-3" id='form' action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+
                       <div class="col-md-6">
                         <label for="full_name" class="form-label">Full Name</label>
                         {{ form.full_name|add_class:"form-control" }}
                       </div>
+
                       <div class="col-md-6">
                         <label for="phone" class="form-label">Phone</label>
-                        {{ form.phone|add_class:"form-control" }}
-                        
+                        {{ form.phone|add_class:"form-control" }}                        
                       </div>
+
                       <div class="col-12">                            
                         <label for="photo" class="form-label">Upload Photo</label>
                         {{ form.photo|add_class:"form-control" }}
-
                       </div>
+
                       <div class="col-md-4">
                         <label for="age" class="form-label">Age</label>
                         {{ form.age|add_class:"form-control" }}
-
                       </div>
+
                       <div class="col-md-4">
                         <label for="location" class="form-label">Location/Town</label>
                         {{ form.location|add_class:"form-control" }}
-
                       </div>
+
                       <div class="col-md-4">
                         <label for="rating" class="form-label">Rating</label>
                         {{ form.rating|add_class:"form-control" }}
-
                       </div>
+
                       <div class="d-grid gap-2 mb-3">
                         <button type="submit" class="btn btn-outline-success">Add</button>
                       </div>
+
                     </form>
                     <div class="d-grid gap-2">
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
@@ -84,43 +87,53 @@
     </section>
 {% endblock content %}
 
+
+
 {% block javascript %}
 <script>
-  $(document).ready(function(){
-    console.log("am ready to suffer")
-    // get all bodies
-    // get cookie
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+    $("#form").submit(function(e){
+        e.preventDefault();
+
+        let data = new FormData($(this).get(0))
+
+        console.log(data)
+
+        // get coookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
             }
+            return cookieValue;
         }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-
-    $.ajax({
-      url: "{% url 'body:home' %}",
-      type: "GET",
-      processData: false,
-      contentType: false,
-      headers: {'X-CSRFToken': csrftoken},
-      success: (data)=> {
-        console.log(data)
-      },
-      error: (error)=> {
-        console.log(error)
-      }
-    })
-
+        const csrftoken = getCookie('csrftoken');
+        
+        $.ajax({
+            url:"{% url 'body:add_person' %}",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'X-CSRFToken': csrftoken
+            },
+            data: data,
+            success: (response)=> {
+                console.log(response.message)
+                window.location.href = "{% url 'body:home' %}"
+            },
+            error: (error)=> {
+                console.log(error.message)
+            }
+        })
     })
 </script>
 {% endblock javascript %}

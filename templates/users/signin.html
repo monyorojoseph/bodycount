@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class='container'>
-    <form action="{% url 'users:signin' %}" method='post' class="form" id="signin">
+    <form action=""  class="form" id="form">
         {% csrf_token %}
         <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome Back</p>
         <div class="content">
@@ -32,3 +32,50 @@
     <p class="text-center">Forgot password ? <a href="{% url 'users:password_reset' %}">reset password</a></p>
 </section>
 {% endblock content %}
+
+{% block javascript %}
+<script>
+    $("#form").submit(function(e){
+        e.preventDefault();
+
+        let data = new FormData($(this).get(0))
+
+        // get coookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        $.ajax({
+            url:"{% url 'users:signin' %}",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'X-CSRFToken': csrftoken
+            },
+            data: data,
+            success: (response)=> {
+                console.log(response.message)
+                window.location.href = "{% url 'body:home' %}"
+            },
+            error: (error)=> {
+                console.log(error.message)
+            }
+        })
+    })
+</script>
+{% endblock javascript %}

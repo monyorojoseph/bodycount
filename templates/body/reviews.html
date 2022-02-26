@@ -8,14 +8,14 @@
     <section class='my-4 py-4'>
         <h6 class="fw-bold">{{ total_reviews }} 
             Reviews posted.
-            <button class="btn btn-link btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#reviewCollapse" aria-expanded="false" aria-controls="reviewCollapse">
+            <button class="btn btn-link btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#postReviewCollapse" aria-expanded="false" aria-controls="postReviewCollapse">
                 Post your review
-            </button
+              </button>
         </h6>
 
-          <div class="collapse mt-2" id="reviewCollapse">
+        <div class="collapse" id="postReviewCollapse">
             <div class="card card-body">
-                <form  method='post' action="{% url 'body:add_review' %}" id="add-review-form" class='d-flex flex-column justify-content-center align-items-center' enctype="multipart/form-data">
+                <form  method='post' action="" id="form" class='d-flex flex-column justify-content-center align-items-center' enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.review_text|add_class:"form-control" }}
                     <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
@@ -39,3 +39,54 @@
 
 </section>
 {% endblock content %}
+
+
+
+{% block javascript %}
+<script>
+    $("#form").submit(function(e){
+        e.preventDefault();
+
+        let data = new FormData($(this).get(0))
+
+        console.log(data)
+
+        // get coookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        $.ajax({
+            url:"{% url 'body:add_review' %}",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'X-CSRFToken': csrftoken
+            },
+            data: data,
+            success: (response)=> {
+                console.log(response.message)
+                window.location.href = "{% url 'body:reviews' %}"
+            },
+            error: (error)=> {
+                console.log(error.message)
+            }
+        })
+    })
+</script>
+{% endblock javascript %}
