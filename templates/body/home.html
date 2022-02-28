@@ -52,7 +52,7 @@
                       </div>
 
                       <div class="d-grid gap-2 mb-3">
-                        <button type="submit" class="btn btn-outline-success">Add</button>
+                        <button type="submit" id='submit' class="btn btn-outline-success">Add</button>
                       </div>
 
                     </form>
@@ -65,22 +65,15 @@
             </div>
         </div>
 
+        <!-- toast after addition of person -->
+        <div class="toast align-items-center text-white bg-secondary top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body"></div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+
         <section id="content" class="mt-2 bodies-container">
-          {% for person in persons_list %}
-            <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
-                <div class='body-card d-flex flex-row justify-content-between align-items-center'>
-                    <img class="body-img" src="{{ person.photo_url }}" alt="{{ person.full_name }}" />
-                    <div class='body-card-info'>
-                        <p class="m-0"><span class='sm-text'>age: </span>{{ person.age }} </p>
-                        <p class="m-0"> <span class='sm-text'>Phone: </span> {{ person.phone }} </p>
-                        <p class="m-0"> <span class='sm-text'>Rating: </span> {{ person.rating }} </p>
-                    </div>
-                </div
-                <h4> {{ person.full_name }} </h4>
-            </div>
-          {% empty %}
-            <p class="text-center">You haven't added a peson you banged !! </p>
-          {% endfor %}
         </section>
          
 
@@ -91,12 +84,82 @@
 
 {% block javascript %}
 <script>
+  // when document is ready get persons list
+  $(document).ready(function(){
+        console.log("am ready to suffer")
+        $("#content").html(
+          `
+          <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status"></div>
+          `
+        )
+
+            // get coookies
+            function getCookie(name) {
+              let cookieValue = null;
+              if (document.cookie && document.cookie !== '') {
+                  const cookies = document.cookie.split(';');
+                  for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      // Does this cookie string begin with the name we want?
+                      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                          break;
+                      }
+                  }
+              }
+              return cookieValue;
+          }
+          const csrftoken = getCookie('csrftoken');
+          
+          $.ajax({
+              url:"{% url 'body:home' %}",
+              type: "GET",
+              processData: false,
+              contentType: false,
+              headers: {
+                  "X-Requested-With": "XMLHttpRequest",
+                  'X-CSRFToken': csrftoken
+              },
+              success: (response)=> {
+                $(".spinner-border").remove()
+                if (response.persons_list.length == 0) {
+                  $("#content").append("<p class='text-center'>You haven't added a peson you banged !! </p>")
+                } 
+
+                if (response.persons_list.length >= 0) {
+                  response.persons_list.forEach((person)=> {
+                    var person_card = `
+                    <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
+                      <div class='body-card d-flex flex-row justify-content-between align-items-center'>
+                        <img class="body-img" src="/media/${person.photo}" alt="${person.full_name}" />
+                          <div class='body-card-info'>
+                              <p class="m-0"><span class='sm-text'>age: </span>${person.age} </p>
+                              <p class="m-0"> <span class='sm-text'>Phone: </span> ${person.phone} </p>
+                              <p class="m-0"> <span class='sm-text'>Rating: </span> ${person.rating} </p>
+                          </div>
+                      </div
+                      <h4> ${person.full_name} </h4>
+                  </div>                    
+                    `
+                  $("#content").append(person_card)
+                  })
+
+
+                }
+              },
+              error: (error)=> {
+                  console.log(error.message)
+              }
+          })
+  })
+  // on submit call this function
     $("#form").submit(function(e){
         e.preventDefault();
 
-        let data = new FormData($(this).get(0))
+        $("#submit").text("Adding ...")
+        $("#submit").prop("disabled", true)
 
-        console.log(data)
+        let data = new FormData($(this).get(0))
 
         // get coookies
         function getCookie(name) {
@@ -127,8 +190,29 @@
             },
             data: data,
             success: (response)=> {
-                console.log(response.message)
-                window.location.href = "{% url 'body:home' %}"
+              $(".modal").modal("hide");
+              // console.log(JSON.parse(response.person)[0].fields.full_name)
+              
+              $('.toast-body').text(`${JSON.parse(response.person)[0].fields.full_name} was added successfully :)`);
+
+              $('.toast').toast('show');
+
+              $("#content").prepend(
+                  `
+                  <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
+                    <div class='body-card d-flex flex-row justify-content-between align-items-center'>
+                      <img class="body-img" src="/media/${JSON.parse(response.person)[0].fields.photo}" alt="${JSON.parse(response.person)[0].fields.full_name}" />
+                        <div class='body-card-info'>
+                            <p class="m-0"><span class='sm-text'>age: </span>${JSON.parse(response.person)[0].fields.age} </p>
+                            <p class="m-0"> <span class='sm-text'>Phone: </span> ${pJSON.parse(response.person)[0].fields.phone} </p>
+                            <p class="m-0"> <span class='sm-text'>Rating: </span> ${JSON.parse(response.person)[0].fields.Rating} </p>
+                        </div>
+                    </div
+                    <h4> ${JSON.parse(response.person)[0].fields.full_name} </h4>
+                  </div>                    
+                `
+              )
+
             },
             error: (error)=> {
                 console.log(error.message)

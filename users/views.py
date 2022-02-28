@@ -40,8 +40,11 @@ from django.contrib import messages
 def signin(request):
     if request.user.is_authenticated:
         return redirect('body:home')
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-    if request.method == "POST":
+    if request.method == 'POST' and is_ajax:
+
         recaptcha_response = request.POST.get('g-recaptcha-response')
         data = {
             "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
@@ -56,9 +59,13 @@ def signin(request):
             
             if user is not None:
                 login(request, user)
+                if request.session.test_cookie_worked():
+                    request.session.set_expiry(31536000)
+
 
         else:
             return JsonResponse({"message":"Invalid reCAPTCHA. Please try again."}, status = 400)
+    request.session.set_test_cookie()
     return render(request, 'users/signin.html')
 
 # signout

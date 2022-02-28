@@ -1,7 +1,7 @@
 from django import forms
 from .models import Profile
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 
 User = get_user_model()
 
@@ -42,7 +42,14 @@ class UserChangeForm(forms.ModelForm):
         fields = ('email', 'password', 'username')
 
 
+"""
+    Auth form with remember me
+"""
 
+class AuthForm(AuthenticationForm):
+    remember_me = forms.BooleanField(label="Remeber me ", required=False, initial=False)
+
+        
 
 class ProfileForm(forms.ModelForm):
     class Meta:

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 from django.conf import settings
+from django_cryptography.fields import encrypt
+
 
 # Create your models here.
 
@@ -78,13 +80,13 @@ class MyUser(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField()
+    email = encrypt(models.EmailField())
     username = models.CharField(max_length=100, unique=True)
-    age = models.PositiveIntegerField(default=18)
-    sex = models.CharField(max_length=20, null=True, blank=True)
+    age = encrypt(models.CharField(default='18', max_length=10))
+    sex = encrypt(models.CharField(max_length=20, null=True, blank=True))
     sexuality = models.CharField(max_length=20, null=True, blank=True)
-    favourite_porn = models.CharField(max_length=200, null=True, blank=True)
-    target = models.PositiveBigIntegerField(default=0)
+    favourite_porn = encrypt(models.CharField(max_length=200, null=True, blank=True))
+    # target = models.PositiveBigIntegerField(default=0)
 
     def __str__(self):
         return self.username

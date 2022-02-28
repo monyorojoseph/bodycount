@@ -7,7 +7,7 @@
     <section class="container mt-3 ">
         <div class='row row-cols-1 row-cols-sm-1 row-cols-md-2'>
             <!-- welcome message -->
-            <div class="col">
+            <div class="col text-center">
                 <h4 class="my-4 text-capitalize" >Welcome</h4>
                 <p>I help humans with high sex drive like myself, who loves having sex with diffrent humans, to track their bodycounts.</p>
                 <p>Personally I lost track of my bodycount which is sad, so I decided to make this web app to help my fellow humans not lose track of their bodycount.</p>
@@ -43,11 +43,12 @@
                     </div>
                     
                     <div class='d-grid gap-2 mt-3'>
-                        <button type="submit" class="my-btn-fill py-1 px-3">Sign Up</button>
+                        <button type="submit" id='submit' class="my-btn-fill py-1 px-3">Sign Up</button>
                     </div>
                 </form>
                 
                 <p class='text-center'>have an account <a href="{% url 'users:signin' %}">login</a></p>
+
             </div>
         </div>
         
@@ -59,6 +60,10 @@
 <script>
     $("#form").submit(function(e){
         e.preventDefault();
+
+        $("#submit").text("Registering ...")
+        $("#submit").prop('disabled',true)
+
 
         let data = new FormData($(this).get(0))
 

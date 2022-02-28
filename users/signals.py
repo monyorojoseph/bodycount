@@ -30,4 +30,4 @@ def update_email_username(sender, instance, **kwargs):
         profile.user.save()
     pass
 
-post_save.connect(update_email_username, Profile)
+post_save.connect(update_email_username, sender=Profile)

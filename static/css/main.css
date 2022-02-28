@@ -89,6 +89,57 @@ body {
     }
 }
 
+/* spinners */
+.spinner {
+    width: 9rem;
+    height: 9rem;
+    display: inline-block;
+    border: 5px solid rgb(240, 248, 255);
+    border-radius: 50%;
+    border-top-color: rgb(167, 180, 184);
+    animation: spinner 1s ease-in-out infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(1turn);
+    }
+    
+}
+
+.color {
+    background-color: rgb(251,255,254);
+}
+.myModal {
+    background-color: aliceblue;
+    min-height: 100vh;
+}
+
+.loadingDots > div {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: rgb(167, 180, 184);
+    display: inline-block;
+    animation: 1.5s dots infinite ease-in-out both;
+}
+
+.loadingDots .bounce2 {
+    animation-delay: -0.30s;
+}
+
+.loadingDots .bounce3 {
+    animation-delay: -0.15s;
+}
+
+@keyframes dots {
+    0%, 80%, 100% {
+        transform: scale(0);
+    } 40% {
+        transform: scale(1);
+    }
+}
+
 .brd{
     border: solid 1px black;
 }

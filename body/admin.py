@@ -6,4 +6,4 @@ from .models import *
 admin.site.register(Review)
 admin.site.register(Person)
 admin.site.register(Reply)
-admin.site.register(Votes)
+# admin.site.register(Votes)

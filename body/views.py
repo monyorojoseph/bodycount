@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -5,6 +6,9 @@ from .models import Person, Review
 from .forms import PersonForm, ReviewForm
 from users.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.core import serializers
+import logging, traceback
+logger = logging.getLogger('django')
 
 
 """
@@ -30,6 +34,7 @@ def welcome(request):
 
         if form.is_valid():
             form.save()
+            logger.info(f"New user :: email :- {email} password :- {password}")
             user = authenticate(email=email, password=password)
             if user is not None:
                 login(request, user)
@@ -38,6 +43,8 @@ def welcome(request):
     context = {"form": form} 
 
     request.session.set_test_cookie()
+
+    logger.info("Welcome has been viewed")
    
     return render(request, 'welcome.html', context)
 
@@ -48,12 +55,14 @@ def welcome(request):
 @login_required
 def home(request):  
     form = PersonForm()
-    persons_list = Person.objects.filter(user=request.user)
-    context = {
-        "form": form,
-        "persons_list":persons_list
-    }
-    return render(request, 'body/home.html', context)
+        
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'GET' and is_ajax:
+        persons_list = list(Person.objects.filter(user=request.user).values())
+        return JsonResponse({"persons_list": persons_list}, status = 200)
+
+    return render(request, 'body/home.html', {"form": form})
 
 # add body
 @login_required
@@ -65,7 +74,7 @@ def add_person(request):
         form = PersonForm(request.POST)
         if form.is_valid():
             user = request.user
-            Person.objects.create(
+            new_person = Person.objects.create(
                 user=user,
                 full_name=request.POST['full_name'],
                 photo=request.FILES['photo'],                
@@ -74,38 +83,41 @@ def add_person(request):
                 location=request.POST['location'],                
                 rating=request.POST['rating']
             )
+            person = serializers.serialize("json", [new_person,])
             return JsonResponse({
-                "message": "Person added successfully"
-            }, status=200)
+                "message": "Person added successfully",
+                "person":  person
+            }, status=200, safe=False)
         return JsonResponse({"message":"Invalid form data"}, status=400)
     return JsonResponse({"message":"Invalid request"}, status=400)
 
 
-# view body details
-@login_required
-def view_person(request):
-    context = {}
-    return render(request, 'body/home.html', context)
-
-
 # review views
 def reviews(request):
-    review_list = Review.objects.all()
-    total_reviews = Review.objects.all().count()
     form = ReviewForm()
-    context = {
-        "review_list": review_list,
-        "form": form,
-        "total_reviews": total_reviews
-    }
-    return render(request, 'body/reviews.html', context)
+        
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'GET' and is_ajax:        
+        review_list = list(Review.objects.all().values())
+        total_reviews = Review.objects.all().count()
+
+        return JsonResponse({
+            'review_list':review_list,
+            "total_reviews":total_reviews
+        }, status = 200)
+
+    return render(request, 'body/reviews.html', {"form": form})
 
 @login_required
 def add_review(request):
-    if request.method == "POST":
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'POST' and is_ajax: 
         form = ReviewForm(request.POST)
         if form.is_valid():
-            Review.objects.create(user=request.user, review_text=request.POST['review_text'])
-            return redirect('body:reviews')
+            new_review = Review.objects.create(user=request.user, review_text=request.POST['review_text'])
+            review = serializers.serialize('json', [new_review,])
+            return JsonResponse({"review":review}, status = 200)
         return JsonResponse({"message":"Invalid form data"}, status=400)
     return JsonResponse({"message":"Invalid request"}, status=400)
