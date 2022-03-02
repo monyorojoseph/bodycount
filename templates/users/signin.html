@@ -4,41 +4,52 @@
 
 {% block content %}
 <section class='container'>
-    <form action=""  class="form" id="form">
+    <form action="" class="form-content mt-4" id="form">
         {% csrf_token %}
         <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome Back</p>
-        <div class="content">
-            <div>
-                <label for="email">Email</label>
-                <input class="form-control" type="email" name="email" placeholder="Email address">
-            </div>
-            
-            <div>
-                <label for="password">Password</label>
-                <input class="form-control" type="password" name="password" placeholder='password'>
-            </div>
+        <div>
+            <label for="email">Email</label>
+            <input class="form-control" type="email" name="email" placeholder="Email address">
+        </div>
+        
+        <div>
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" placeholder='password'>
+        </div>
 
-            <script src="https://www.google.com/recaptcha/api.js"
-              async defer>
-            </script>
+        <script src="https://www.google.com/recaptcha/api.js"
+            async defer>
+        </script>
 
-            <div class="g-recaptcha mt-3" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
+        <div class="g-recaptcha mt-3" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
 
-            <div class='d-grid gap-2 mt-3'>
-                <button type="submit" class="my-btn-fill py-1 px-3">Sign In</button>
-            </div>
+        <div class='d-grid gap-2 mt-3'>
+            <button type="submit" id='submit' class="btn-main py-1 px-3">Sign In</button>
         </div>
     </form>
-    <p class="text-center">Forgot password ? <a href="{% url 'users:password_reset' %}">reset password</a></p>
+    <p class="text-center mt-3">Forgot password ? <a href="{% url 'users:password_reset' %}">reset password</a></p>
+    <p class="text-center mt-3">New here ? <a href="{% url 'body:welcome' %}">register</a></p>
+
 </section>
 {% endblock content %}
 
 {% block javascript %}
 <script>
+    // doc ready function
+    $(document).ready(function(){
+        $("body").addClass('review')
+        $("#nav-signin").addClass('active')
+
+    })
+    // submit function
+
     $("#form").submit(function(e){
         e.preventDefault();
 
         let data = new FormData($(this).get(0))
+        $("#submit").text("Hold up  ...")
+        $("#submit").prop("disabled", true)
+
 
         // get coookies
         function getCookie(name) {

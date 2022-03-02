@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="container">
-    <form action="{% url 'users:registration' %}" method='post' class="form" id="signup">
+    <form action="{% url 'users:registration' %}" method='post' id="signup">
         {% csrf_token %}
         <p class="text-center m-0 py-2">Create account</p>
         <div class="content">

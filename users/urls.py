@@ -10,6 +10,8 @@ urlpatterns = [
     path('signout/', signout, name='signout'),
     path('view_profile/', view_profile, name='view_profile'),
     path('edit_profile/', edit_profile, name='edit_profile'),
+    path('close_account/', close_account, name='close_account'),
+
 
     # password change
     path(

@@ -3,11 +3,11 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<section class="text-center container">
+<section class="container">
     <!-- posted reviews total in number post review -->
-    <section class='my-4 py-4'>
-        <h6 class="fw-bold">{{ total_reviews }} 
-            Reviews posted.
+    <section class='text-center  my-4 py-4'>
+        <h6 class="fw-bold"><span id='count'></span>
+            Review(s) posted.
             <button class="btn btn-link btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#postReviewCollapse" aria-expanded="false" aria-controls="postReviewCollapse">
                 Post your review
               </button>
@@ -15,36 +15,19 @@
 
         <div class="collapse" id="postReviewCollapse">
             <div class="card card-body">
-                <form  method='post' action="" id="form" class='d-flex flex-column justify-content-center align-items-center' enctype="multipart/form-data">
+                <form  method='post' action="" id="form" >
                     {% csrf_token %}
                     {{ form.review_text|add_class:"form-control" }}
-                    <button type="submit" class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
+                    <button type="submit" id='post' class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
                 </form>
             </div>
         </div>
-
-        <div class="toast align-items-center text-white bg-secondary bottom-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-              <div class="toast-body">
-              Welcome to reviews.
-             </div>
-              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-
           
     </section>
     <!-- review list -->
-    <section class='review_section'>
-        {% for review in review_list  %}
-            <div class='review'>
-                <div class='name-ts'>
-                    <h6 class='name'>@{{ review.user.username }}</h6>
-                    <p class='ts'>{{review.pub_date|date:"d M Y"}}</p>
-                </div>
-                <p class='review_text'>{{ review.review_text }}</p>
-            </div>
-        {% endfor %}
+    <section id='reviews'>
+
+
     </section>
 
 </section>
@@ -56,13 +39,74 @@
 <script>
     // on load show a toast
     $(document).ready(function(){
-        console.log("am ready to suffer")
-        $('.toast').toast('show');
+        $("body").addClass("review")
+        $("#nav-reviews").addClass('active')
+        $("#reviews").html(
+            `
+            <div class='text-center loader'><div class="spinner-border" style="width: 4rem; height: 4rem;" role="status"></div></div>
+            `
+          )
+                // get coookies
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                const csrftoken = getCookie('csrftoken');
+                
+                $.ajax({
+                    url:"{% url 'body:reviews' %}",
+                    type: "GET",
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: (response)=> {
+                        $(".loader").remove()
+                        const reviews = response.review_list
+                        const total_reviews = response.total_reviews
+                        if (reviews.length == 0) {
+                            $("#count").text('0')
+
+                            $("#reviews").append(`
+                                <p class="none text-center mt-3">No reviews have been posted. </p>
+                                
+                            `)                            
+                        }
+                        if (reviews.length >= 0) {
+                            reviews.forEach((review)=> {
+                                $("#count").text(`${total_reviews}`)
+
+                                $("#reviews").append(`
+                                    <div class="pe-auto shadow-sm w-75 p-3 mb-5 bg-body rounded">
+                                        <p class="m-1 px-2 border-start border-warning border-3 rounded-start">${review.review_text} </p>
+                                        <p class="blockquote-footer text-end m-0 mt-1">${review.username}</p> 
+                                    </div>
+                                `) 
+                            })
+                        }
+                    },
+                    error: (error)=> {
+                        console.log(error.message)
+                    }
+                })
     })
     // submit review function
     $("#form").submit(function(e){
         e.preventDefault();
-
+        $("#post").text("Posting ...")
         let data = new FormData($(this).get(0))
 
         console.log(data)
@@ -96,8 +140,19 @@
             },
             data: data,
             success: (response)=> {
-                console.log(response.message)
-                window.location.href = "{% url 'body:reviews' %}"
+                if ($(".none")){
+                    $(".none").remove()
+                  }
+                const review_data = JSON.parse(response.review)[0].fields
+                console.log(review_data)
+                $("#postReviewCollapse").collapse('hide')
+                
+                $("#reviews").prepend(`
+                <div class="pe-auto shadow-sm w-75 p-3 mb-5 bg-body rounded">
+                    <p class="m-1 px-2 border-start border-warning border-3 rounded-start">${review_data.review_text}</p>
+                    <p class="blockquote-footer text-end m-0 mt-1">${review_data.username}</p> 
+                </div>
+                `) 
             },
             error: (error)=> {
                 console.log(error.message)

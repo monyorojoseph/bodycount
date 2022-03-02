@@ -8,13 +8,13 @@
         <!-- add bodycount button -->
         <div class="text-center">
             <!-- <button class="my-3 fs-6 fw-bold text-capitalize py-1 px-3 my-btn">Add new</button> -->
-            <button type="button" class="my-4 fs-6 fw-bold text-capitalize py-1 px-3 my-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <button type="button"  class='shell-btn px-4 mb-3' data-bs-toggle="modal" data-bs-target="#addPersonModal">
                 Add new
             </button>
         </div>
         
         <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="addPersonModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addPersonModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-body">
@@ -48,32 +48,31 @@
 
                       <div class="col-md-4">
                         <label for="rating" class="form-label">Rating</label>
-                        {{ form.rating|add_class:"form-control" }}
+                        {% comment %} {{ form.rating|add_class:"form-control" }} {% endcomment %}
+                        <div class='stars'>
+                          <span id='1' class="fa fa-star"></span>
+                          <span id='2' class="fa fa-star"></span>
+                          <span id='3' class="fa fa-star"></span>
+                          <span id='4' class="fa fa-star"></span>
+                          <span id='5' class="fa fa-star"></span>
+                        </div>
                       </div>
 
                       <div class="d-grid gap-2 mb-3">
-                        <button type="submit" id='submit' class="btn btn-outline-success">Add</button>
+                        <button type="submit" id='submit' class="btn btn-sm btn-secondary rounded-0 fw-bold">Add</button>
                       </div>
 
                     </form>
                     <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-main" data-bs-dismiss="modal">Cancel</button>
                     </div>
 
               </div>
             </div>
             </div>
         </div>
-
-        <!-- toast after addition of person -->
-        <div class="toast align-items-center text-white bg-secondary top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="d-flex">
-            <div class="toast-body"></div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-        </div>
-
-        <section id="content" class="mt-2 bodies-container">
+        <!-- list all persons-->
+        <section id="content" class='mb-5'>
         </section>
          
 
@@ -84,9 +83,74 @@
 
 {% block javascript %}
 <script>
+  // handle rating
+  const one = document.getElementById("1")
+  const two = document.getElementById("2")
+  const three = document.getElementById("3")
+  const four = document.getElementById("4")
+  const five = document.getElementById("5")
+
+  const handleStartSelect = (size)=> {
+    const all_stars = document.querySelector(".stars").children;
+    for (let i=0; i < all_stars.length; i++) {
+        if(i<=size){
+          all_stars[i].classList.add("checked");
+        } else {
+          all_stars[i].classList.remove("checked");          
+        }
+    }
+  }
+
+  const handleSelect = (selection)=> {
+    switch(selection){
+      case 1: {
+        handleStartSelect(0)
+        return
+      }
+      case 2: {
+        handleStartSelect(1)
+        return
+      }
+
+      case 3: {
+        handleStartSelect(2)
+        return
+      }
+
+      case 4: {
+        handleStartSelect(3)
+        return
+      }
+
+      case 5: {
+        handleStartSelect(4)
+        return
+      }
+      
+    }
+  }
+
+  const all_stars = [one, two, three, four, five]
+
+  let vote_star = 0;
+
+  all_stars.forEach(item => {
+    item.addEventListener('mouseover', (event)=> {
+      handleSelect(parseInt(event.target.id))
+    })
+
+    item.addEventListener('click', (event)=>{
+      vote_star = parseInt(event.target.id)
+    })
+  })
+
+
   // when document is ready get persons list
   $(document).ready(function(){
-        console.log("am ready to suffer")
+        // add class to home tag
+        $("body").addClass("home")
+        $("#nav-home").addClass('active')
+        // insert a loader or spinner
         $("#content").html(
           `
           <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status"></div>
@@ -123,25 +187,84 @@
               success: (response)=> {
                 $(".spinner-border").remove()
                 if (response.persons_list.length == 0) {
-                  $("#content").append("<p class='text-center'>You haven't added a peson you banged !! </p>")
+                  $("#content").append("<p class='none text-center'>You haven't added a peson you banged !! </p>")
                 } 
 
                 if (response.persons_list.length >= 0) {
                   response.persons_list.forEach((person)=> {
+                    const stars = (count)=> {
+                      switch(count){
+                        case 0: {
+                         return `
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        `
+                        }
+                        case 1:{
+                        return `
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        `
+                        }
+                        case 2: {
+                        return `
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        `
+                        }
+                        case 3: {
+                        return `
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star "></span>
+                        <span class="fa fa-star "></span>
+                        `
+                        }
+                        case 4: {
+                        return `
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        `
+                        }
+                        case 5: {
+                        return `
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        `
+                        }
+                      }
+                    }
                     var person_card = `
-                    <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
-                      <div class='body-card d-flex flex-row justify-content-between align-items-center'>
-                        <img class="body-img" src="/media/${person.photo}" alt="${person.full_name}" />
-                          <div class='body-card-info'>
-                              <p class="m-0"><span class='sm-text'>age: </span>${person.age} </p>
-                              <p class="m-0"> <span class='sm-text'>Phone: </span> ${person.phone} </p>
-                              <p class="m-0"> <span class='sm-text'>Rating: </span> ${person.rating} </p>
+                    <div class="person-card">
+                      <div class="card-content">
+                        <img src="/media/${person.photo}" alt="${person.full_name}" />
+                          <div>
+                              <p class="m-0"><span>age: </span>${person.age} </p>
+                              <p class="m-0"> <span>Phone: </span> ${person.phone} </p>
+                              <p class="m-0"> <span>Rating: </span> ${stars(person.rating)}</p>
                           </div>
+                        <h4> ${person.full_name} </h4>
                       </div
-                      <h4> ${person.full_name} </h4>
                   </div>                    
                     `
                   $("#content").append(person_card)
+
                   })
 
 
@@ -160,6 +283,7 @@
         $("#submit").prop("disabled", true)
 
         let data = new FormData($(this).get(0))
+        data.append('rating',vote_star)
 
         // get coookies
         function getCookie(name) {
@@ -190,28 +314,30 @@
             },
             data: data,
             success: (response)=> {
-              $(".modal").modal("hide");
-              // console.log(JSON.parse(response.person)[0].fields.full_name)
               
-              $('.toast-body').text(`${JSON.parse(response.person)[0].fields.full_name} was added successfully :)`);
+              if ($(".none")){
+                $(".none").remove()
+              }
 
-              $('.toast').toast('show');
-
-              $("#content").prepend(
+              $(".modal").modal("hide");
+              // create new toast element
+              const new_person = JSON.parse(response.person)[0].fields
+              $("#content").prepend( 
                   `
-                  <div class='p-0 body-card-container d-flex flex-column justify-content-center align-items-center brd'>
-                    <div class='body-card d-flex flex-row justify-content-between align-items-center'>
-                      <img class="body-img" src="/media/${JSON.parse(response.person)[0].fields.photo}" alt="${JSON.parse(response.person)[0].fields.full_name}" />
-                        <div class='body-card-info'>
-                            <p class="m-0"><span class='sm-text'>age: </span>${JSON.parse(response.person)[0].fields.age} </p>
-                            <p class="m-0"> <span class='sm-text'>Phone: </span> ${pJSON.parse(response.person)[0].fields.phone} </p>
-                            <p class="m-0"> <span class='sm-text'>Rating: </span> ${JSON.parse(response.person)[0].fields.Rating} </p>
+                  <div class="person-card">
+                    <div class="card-content">
+                      <img src="/media/${new_person.photo}" alt="${new_person.full_name}" />
+                        <div>
+                            <p class="m-0"><span>age: </span>${new_person.age} </p>
+                            <p class="m-0"> <span>Phone: </span> ${new_person.phone} </p>
+                            <p class="m-0"> <span>Rating: </span> ${new_person.rating} </p>
                         </div>
+                      <h4> ${new_person.full_name} </h4>
                     </div
-                    <h4> ${JSON.parse(response.person)[0].fields.full_name} </h4>
-                  </div>                    
+                </div>                    
                 `
               )
+
 
             },
             error: (error)=> {

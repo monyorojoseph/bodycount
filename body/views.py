@@ -43,8 +43,6 @@ def welcome(request):
     context = {"form": form} 
 
     request.session.set_test_cookie()
-
-    logger.info("Welcome has been viewed")
    
     return render(request, 'welcome.html', context)
 
@@ -80,14 +78,11 @@ def add_person(request):
                 photo=request.FILES['photo'],                
                 phone=request.POST['phone'],                
                 age=request.POST['age'],                
-                location=request.POST['location'],                
-                rating=request.POST['rating']
+                location=request.POST['location'], 
+                rating = request.POST['rating']               
             )
             person = serializers.serialize("json", [new_person,])
-            return JsonResponse({
-                "message": "Person added successfully",
-                "person":  person
-            }, status=200, safe=False)
+            return JsonResponse({"person":  person}, status=200, safe=False)
         return JsonResponse({"message":"Invalid form data"}, status=400)
     return JsonResponse({"message":"Invalid request"}, status=400)
 
@@ -116,7 +111,7 @@ def add_review(request):
     if request.method == 'POST' and is_ajax: 
         form = ReviewForm(request.POST)
         if form.is_valid():
-            new_review = Review.objects.create(user=request.user, review_text=request.POST['review_text'])
+            new_review = Review.objects.create(user=request.user, review_text=request.POST['review_text'], username=request.user.username)
             review = serializers.serialize('json', [new_review,])
             return JsonResponse({"review":review}, status = 200)
         return JsonResponse({"message":"Invalid form data"}, status=400)

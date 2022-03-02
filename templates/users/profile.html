@@ -3,34 +3,150 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<section class="container">
-    <!-- personal information -->
-    <div class="profile-container my-5">
-        <div class='info1'>
-            <!-- personal/first name -->
-            <p>Username :- <span>{{ profile_details.username}}</span></p>
-            <!-- email -->
-            <p>Email :- <span>{{ profile_details.email }}</span></p>  
-            <!-- age -->
-            <p>Age :- <span>{{profile_details.age }}</span></p>
-            <!-- sex -->
-            <p>Sex :- <span>{{profile_details.sex}}</span></p>
-        </div>
+<section class="container m-5">
+    <div class="card w-75">
+        <div class="card-body">
+          <h5 class="card-title text-center fs-3 mb-3">Profile</h5>
+          <p class="card-text text-muted fw-bold fs-4">Email :- <span id="email" ></span></p>
+          <p class="card-text text-muted fw-bold fs-4">Username:- <span id="username" ></span></p>
+          <p class="card-text text-muted fw-bold fs-4">Age:- <span id="age" ></span></p>
+          <p class="card-text text-muted fw-bold fs-4">Gender:- <span id="gender" ></span></p>
+          <!-- <p class="card-text text-muted fw-bold fs-4">Joined:- <span id="gender" ></span></p> -->
 
-        <div class='info2'>                                  
-            <!-- sexuality -->
-            <p>Sexuality :- <span>{{profile_details.sexuality}}</span></p>
-            <!-- target -->
-            <p>Bodycount target :- <span>{{profile_details.target}}</span></p>
-            <!-- favourite porn -->
-            <p>Favourite Porn :- <span>{{profile_details.favourite_porn}}</span></p>
-            <!-- fetish -->
-            <P>Fetish :- <span>baby mamas</span></P>
+
+          <button class="btn btn-sm btn-link mb-3" data-bs-toggle="collapse" data-bs-target="#updateProfile" aria-expanded="false" aria-controls="updateProfile">
+              Update profile
+         </button>
+
+            <div class="collapse" id="updateProfile">
+                <div class="card card-body">
+                    <form  method='post' action="" id="form" >
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                            {{form.email|add_class:"form-control"}}                                
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Username</label>
+                            <div class="col-sm-10">
+                            {{form.username|add_class:"form-control"}}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Age</label>
+                            <div class="col-sm-10">
+                                {{form.age|add_class:'form-control'}}                                  
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Gender</label>
+                            <div class="col-sm-10">
+                                {{form.gender|add_class:"form-control form-select"}}
+                            </div>
+                        </div>
+                        <button type="submit" id='post' class="btn rounded-0 btn-primary py-1 px-3 mt-3">Post</button>   
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="my-3 text-center">
-        <button class="fs-6 fw-bold text-capitalize py-1 px-3 my-btn-muted">update Profile</button>
-        <button class="fs-6 fw-bold text-capitalize py-1 px-3 my-btn">Close Account</button>
-    </div>        
+      </div>
 </section>
 {%  endblock content %}
+
+{%  block javascript %}
+<script>
+    $(document).ready(function(){
+        $("body").addClass("review")
+        $("#email").text("......................");
+        $("#username").text("................");
+        $("#age").text(".......");
+        $("#gender").text("............");
+
+            // get coookies
+            function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        $.ajax({
+            url:"{% url 'users:view_profile' %}",
+            type: "GET",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'X-CSRFToken': csrftoken
+            },
+            success: (response)=> {
+                const prof = JSON.parse(response.profile)[0].fields
+                $("#email").text(prof.email);
+                $("#username").text(prof.username);
+                $("#age").text(prof.age);
+                $("#gender").text(prof.gender);
+
+
+            },
+            error: (error)=> {
+                console.log(error.message)
+            }
+        })
+    })
+
+     // on submit call this function
+    $("#form").submit(function(e){
+        e.preventDefault();
+
+        const data = new FormData($(this).get(0));
+        // get coookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'users:edit_profile' %}",
+            processData: false,
+            contentType: false,
+            data: data,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'X-CSRFToken': csrftoken
+            },
+            success: (response)=>{
+                console.log('am ready to suffer')
+                $("#updateProfile").collapse("hide")
+            },
+            error: (error)=> {
+                console.log("failed")
+            }
+        });
+    });
+</script>
+{%  endblock javascript %}

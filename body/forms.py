@@ -6,7 +6,7 @@ class PersonForm(ModelForm):
     class Meta:
         model = Person
         fields = "__all__"
-        exclude = ['user', 'pub_date']
+        exclude = ['user', 'pub_date', 'rating']
 
 class ReviewForm(ModelForm):
     class Meta:
