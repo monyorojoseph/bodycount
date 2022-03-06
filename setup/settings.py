@@ -168,38 +168,32 @@ MEDIA_ROOT =  BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # configuring logging
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'loggers': {
-#         'django': {
-#             'handlers': ['info_file'],
-#             'level': 'DEBUG',
-#         },
-#     },
-#     'handlers': {
-#         'debug_file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': './logs/debug.log',
-#             'formatter': 'simple'
-#         },
-#         'info_file': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': './logs/info.log',
-#             'formatter': 'verbose'
-#         },
-#     },
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'loggers': {
+        'body.views': {
+            'handlers': ['info_file'],
+            'level': 'INFO',
+        },
+    },
+    'handlers': {
+        'info_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': './logs/body.log',
+            'formatter': 'verbose'
+        },
+    },
 
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     }
-# }
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    }
+}

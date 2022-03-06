@@ -1,63 +1,4 @@
-{% extends "base.html" %}
-{% load static %}
-{% load widget_tweaks %}
 
-<!-- attaching block content -->
-{% block content %}
-    <section class="container mt-3">
-        <div class='row row-cols-lg-2 welcome-container'>
-            <!-- welcome message -->
-            <div class="col text-center">
-                <h4 class="my-4 text-capitalize" >Welcome</h4>
-                <p>I help humans with high sex drive like myself, who loves having sex with diffrent humans, to track their bodycounts.</p>
-                <p>Personally I lost track of my bodycount which is sad, so I decided to make this web app to help my fellow humans not lose track of their bodycount.</p>
-            </div>
-            <!-- sign up form -->
-            <div class="col">
-                <form class="form-content" id='form' action="">
-                    {% csrf_token %}
-                    <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome don't be shy</p>
-
-                    <div class='mb-3' >
-                        <label for="username">Username</label>
-                        {{form.username|add_class:"form-control"}}
-                        <p class='username-error fs-6 mt-1 text-danger'></p>
-                    </div>
-                    
-                    <div class='mb-3' >
-                        <label for="email">Email</label>
-                        {{form.email|add_class:"form-control"}}
-                        <p class='email-error fs-6 mt-1 text-danger'></p>
-                    </div>
-                    
-                    <div class='mb-3' >
-                        <label for="password1">Password</label>
-                        {{form.password1|add_class:"form-control"}}
-
-                    </div>
-        
-                    <div class='mb-3' >
-                        <label for="password2">Confirm Password</label>
-                        {{form.password2|add_class:"form-control"}}
-
-                    </div>
-                    
-                    <div class='d-grid gap-2 mt-3'>
-                        <button type="submit" id='submit' class=" btn-main py-1 px-3">Sign Up</button>
-                    </div>
-                </form>
-                
-                <p class='text-center mt-3'>have an account <a href="{% url 'users:signin' %}">login</a></p>
-
-            </div>
-        </div>
-        
-    </section>
-{% endblock content %} 
-
-
-{% block javascript %}
-<script>
     // when ready
     $(document).ready(function(){
         $("body").addClass("welcome")
@@ -95,9 +36,8 @@
             },
             data: JSON.stringify(data),
             success: (response)=> {
-                if (response.valid) {
-                    $(".email-error").text("email exist")
-                }
+                console.log("am ready to suffer")
+                console.log(response.valid)
             },
             error: (error)=> {
                 console.log(error.message)
@@ -137,9 +77,8 @@
             },
             data: JSON.stringify(data),
             success: (response)=> {
-                if (response.valid) {
-                    $(".username-error").text("username exist")
-                }
+                console.log("am ready to suffer")
+                console.log(response.valid)
             },
             error: (error)=> {
                 console.log(error.message)
@@ -194,6 +133,4 @@
                 console.log(error.message)
             }
         })
-    })
-</script>
-{% endblock javascript %}
+    });

@@ -16,10 +16,10 @@ User = settings.AUTH_USER_MODEL
 class Person(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_bodies')
     full_name = encrypt(models.CharField(max_length=200))
-    photo = encrypt(models.ImageField(null=True, blank=True, upload_to='photos'))
-    phone = encrypt(models.CharField(max_length=200, null=True, blank=True))
+    photo = encrypt(models.ImageField(upload_to='photos'))
+    phone = encrypt(models.CharField(max_length=200))
     age = models.IntegerField(default=18)
-    location = models.CharField(max_length=200, null=True, blank=True)
+    location = models.CharField(max_length=200)
     pub_date = models.DateTimeField(default=timezone.now())
     rating = models.IntegerField(default=0, validators=[
                                    MaxValueValidator(5),

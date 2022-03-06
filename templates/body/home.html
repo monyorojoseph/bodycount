@@ -48,7 +48,6 @@
 
                       <div class="col-md-4">
                         <label for="rating" class="form-label">Rating</label>
-                        {% comment %} {{ form.rating|add_class:"form-control" }} {% endcomment %}
                         <div class='stars'>
                           <span id='1' class="fa fa-star"></span>
                           <span id='2' class="fa fa-star"></span>
@@ -147,6 +146,7 @@
 
   // when document is ready get persons list
   $(document).ready(function(){
+        $("#form input").prop("required", true)
         // add class to home tag
         $("body").addClass("home")
         $("#nav-home").addClass('active')

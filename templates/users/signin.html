@@ -4,6 +4,20 @@
 
 {% block content %}
 <section class='container'>
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-absolute top-0 end-0 p-3">      
+          <!-- Then put toasts within -->
+        <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body"></div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
     <form action="" class="form-content mt-4" id="form">
         {% csrf_token %}
         <p class="text-center m-0 py-2 fs-4 fw-bold mb-3">Welcome Back</p>
@@ -84,7 +98,12 @@
                 window.location.href = "{% url 'body:home' %}"
             },
             error: (error)=> {
-                console.log(error.message)
+                const msg = error.responseJSON.message
+                
+                $("#submit").text("Sign In")
+                $("#submit").prop("disabled", false)
+                $(".toast-body").text(msg)
+                $(".toast").toast("show")
             }
         })
     })

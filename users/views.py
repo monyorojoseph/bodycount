@@ -1,4 +1,6 @@
+from os import stat
 import requests
+import json
 from django.shortcuts import redirect, render
 from users.forms import ProfileForm
 from .models import Profile
@@ -13,6 +15,35 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # Create your views here.
+
+"""
+    Check username and email if it's unique before registration
+"""
+def check_mail(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'POST' and is_ajax:
+        email = json.load(request).get("email")
+        if  User.objects.filter(email=email).exists():
+            return JsonResponse({"valid": True}, status=200)
+        else:
+            return JsonResponse({"valid": False}, status=200)
+    
+    return JsonResponse({"message": "Invalid request"}, status=400)
+
+def check_username(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if request.method == 'POST' and is_ajax:
+        username = json.load(request).get("username")
+        if  User.objects.filter(username=username).exists():
+            return JsonResponse({"valid": True}, status=200)
+        else:
+            return JsonResponse({"valid": False}, status=200)
+    
+    return JsonResponse({"message": "Invalid request"}, status=400)
+
+
 
 """
     Authentication view: registration, sign in, sign out, closing account
@@ -65,6 +96,8 @@ def signin(request):
                 login(request, user)
                 if request.session.test_cookie_worked():
                     request.session.set_expiry(31536000)
+            else:
+                return JsonResponse({"message":"Invalid credentials"}, status=400)
 
 
         else:

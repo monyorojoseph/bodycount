@@ -11,7 +11,10 @@ urlpatterns = [
     path('view_profile/', view_profile, name='view_profile'),
     path('edit_profile/', edit_profile, name='edit_profile'),
     path('close_account/', close_account, name='close_account'),
-
+    
+    # check username and mail
+    path('check_mail/', check_mail, name='check_mail'),
+    path('check_username/', check_username, name='check_username'),
 
     # password change
     path(

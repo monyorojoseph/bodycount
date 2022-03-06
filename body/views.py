@@ -7,9 +7,11 @@ from .forms import PersonForm, ReviewForm
 from users.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.core import serializers
-import logging, traceback
-logger = logging.getLogger('django')
+from django.contrib.auth import get_user_model
 
+logger = logging.getLogger(__name__)
+
+User = get_user_model()
 
 """
     Landing page also has sign up form
@@ -27,14 +29,13 @@ def welcome(request):
     if request.method == 'POST' and is_ajax:
         form = UserCreationForm(request.POST)        
         email = request.POST['email']
+        username = request.POST['username']
         password = request.POST['password1']
-
-        if request.session.test_cookie_worked():
-            request.session['email'] = email
 
         if form.is_valid():
             form.save()
-            logger.info(f"New user :: email :- {email} password :- {password}")
+            total_users = User.objects.all().count()
+            logger.info(f"[ User {total_users}] email :- {email} username :- {username}")
             user = authenticate(email=email, password=password)
             if user is not None:
                 login(request, user)
