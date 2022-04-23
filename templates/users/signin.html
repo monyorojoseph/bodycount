@@ -2,6 +2,8 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block title %}Sign in{% endblock title %}
+
 {% block content %}
 <section class='container'>
 
@@ -30,12 +32,6 @@
             <label for="password">Password</label>
             <input class="form-control" type="password" name="password" placeholder='password'>
         </div>
-
-        <script src="https://www.google.com/recaptcha/api.js"
-            async defer>
-        </script>
-
-        <div class="g-recaptcha mt-3" data-sitekey="6LdnuYweAAAAAFJY8I5Wi7s5y3LSpl60nzyrERzA"></div>
 
         <div class='d-grid gap-2 mt-3'>
             <button type="submit" id='submit' class="btn-main py-1 px-3">Sign In</button>

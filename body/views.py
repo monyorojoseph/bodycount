@@ -8,6 +8,7 @@ from users.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.core import serializers
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -40,10 +41,11 @@ def welcome(request):
             if user is not None:
                 login(request, user)
                 return JsonResponse({"message":"User created successfully"}, status = 200)
-        # else return form errors in json response
+        return JsonResponse({"message": "Invalid form"}, status=400)
+        
     context = {"form": form} 
 
-    request.session.set_test_cookie()
+    # request.session.set_test_cookie()
    
     return render(request, 'welcome.html', context)
 
@@ -70,7 +72,7 @@ def add_person(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if request.method == 'POST' and is_ajax:
-        form = PersonForm(request.POST)
+        form = PersonForm(request.POST, request.FILES)
         if form.is_valid():
             user = request.user
             new_person = Person.objects.create(
@@ -80,7 +82,7 @@ def add_person(request):
                 phone=request.POST['phone'],                
                 age=request.POST['age'],                
                 location=request.POST['location'], 
-                rating = request.POST['rating']               
+                rating = request.POST['rating']    
             )
             person = serializers.serialize("json", [new_person,])
             return JsonResponse({"person":  person}, status=200, safe=False)
@@ -111,9 +113,10 @@ def add_review(request):
 
     if request.method == 'POST' and is_ajax: 
         form = ReviewForm(request.POST)
-        if form.is_valid():
-            new_review = Review.objects.create(user=request.user, review_text=request.POST['review_text'], username=request.user.username)
+        if form.is_valid():                               
+            new_review = Review.objects.create(user=request.user, review_text=request.POST['review_text'], username=request.user.username )
             review = serializers.serialize('json', [new_review,])
             return JsonResponse({"review":review}, status = 200)
         return JsonResponse({"message":"Invalid form data"}, status=400)
     return JsonResponse({"message":"Invalid request"}, status=400)
+

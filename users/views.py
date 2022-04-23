@@ -1,5 +1,3 @@
-from os import stat
-import requests
 import json
 from django.shortcuts import redirect, render
 from users.forms import ProfileForm
@@ -50,27 +48,6 @@ def check_username(request):
 
 """
 
-# registration
-# def registration(request):
-#     if request.user.is_authenticated:
-#         return redirect('body:home')
-
-#     form = UserCreationForm()
-#     if request.method == "POST":
-#         form = UserCreationForm(request.POST)        
-#         email = request.POST['email']
-#         password = request.POST['password1']
-
-#         if form.is_valid():
-#             form.save()
-#             user = authenticate(email=email, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 return JsonResponse({"message":"User created successfully"}, status=200)
-#         return JsonResponse({"message":"Invalid from"}, status = 400)  # modify later to return form errors
-#     context = {"form": form}    
-#     return render(request, 'users/signup.html', context)
-
 # sign in
 def signin(request):
     if request.user.is_authenticated:
@@ -79,30 +56,18 @@ def signin(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if request.method == 'POST' and is_ajax:
-
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        data = {
-            "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-            "response": recaptcha_response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = r.json()
-        if result['success']:
-            email = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(request, email=email, password=password)
-            
-            if user is not None:
-                login(request, user)
-                if request.session.test_cookie_worked():
-                    request.session.set_expiry(31536000)
-            else:
-                return JsonResponse({"message":"Invalid credentials"}, status=400)
-
-
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+        
+        if user is not None:
+            login(request, user)
+            # if request.session.test_cookie_worked():
+            #     request.session.set_expiry(31536000)
         else:
-            return JsonResponse({"message":"Invalid reCAPTCHA. Please try again."}, status = 400)
-    request.session.set_test_cookie()
+            return JsonResponse({"message":"Invalid credentials"}, status=400)
+
+    # request.session.set_test_cookie()
     return render(request, 'users/signin.html')
 
 # signout
@@ -153,4 +118,5 @@ def view_profile(request):
         profile = Profile.objects.get(user=request.user)
         serialized_profile = serializers.serialize('json', [profile,])
         return JsonResponse({"profile": serialized_profile}, status=200, safe=False)
+        
     return render(request, 'users/profile.html', {"form":form}) 

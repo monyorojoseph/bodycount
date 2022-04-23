@@ -2,9 +2,25 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block title %}Welcome{% endblock title %}
 <!-- attaching block content -->
 {% block content %}
     <section class="container mt-3">
+        <!-- alert toast -->
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-absolute top-0 end-0 p-3">
+          
+              <!-- Then put toasts within -->
+              <div class="toast align-items-center text-white bg-warning" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                  <div class="toast-body"></div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         <div class='row row-cols-lg-2 welcome-container'>
             <!-- welcome message -->
             <div class="col text-center">
@@ -50,6 +66,7 @@
                 <p class='text-center mt-3'>have an account <a href="{% url 'users:signin' %}">login</a></p>
 
             </div>
+
         </div>
         
     </section>
@@ -62,6 +79,7 @@
     $(document).ready(function(){
         $("body").addClass("welcome")
     })
+
     // email key up
     $("#id_email").focusout(function(e){
         const data = {"email":e.target.value}
@@ -96,7 +114,7 @@
             data: JSON.stringify(data),
             success: (response)=> {
                 if (response.valid) {
-                    $(".email-error").text("email exist")
+                    $(".email-error").text("email exists")
                 }
             },
             error: (error)=> {
@@ -104,6 +122,12 @@
             }
         })
     })
+
+    // clear email warning
+    $("#id_email").focusin(function(e){
+        $(".email-error").text("")
+    });
+
     // username
     $("#id_username").focusout(function(e){
         const data = {"username":e.target.value}
@@ -138,7 +162,7 @@
             data: JSON.stringify(data),
             success: (response)=> {
                 if (response.valid) {
-                    $(".username-error").text("username exist")
+                    $(".username-error").text("username exists")
                 }
             },
             error: (error)=> {
@@ -147,12 +171,14 @@
         })
         
     })
+
+    // clear email warning
+    $("#id_username").focusin(function(e){
+        $(".username-error").text("")
+    }); 
     // Registering user
     $("#form").submit(function(e){
         e.preventDefault();
-
-        $("#submit").text("Registering ...")
-        $("#submit").prop('disabled',true)
 
 
         let data = new FormData($(this).get(0))
@@ -175,25 +201,39 @@
             return cookieValue;
         }
         const csrftoken = getCookie('csrftoken');
-        
-        $.ajax({
-            url:"{% url 'body:welcome' %}",
-            type: "POST",
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                'X-CSRFToken': csrftoken
-            },
-            data: data,
-            success: (response)=> {
-                console.log(response.message)
-                window.location.href = 'home/'
-            },
-            error: (error)=> {
-                console.log(error.message)
-            }
-        })
+
+        // counter check if password before submitting
+        const password1 = $("#id_password1").val()
+        const password2 = $("#id_password2").val()
+
+        if (password1 === password2) {            
+
+            $("#submit").text("Registering ...")
+            $("#submit").prop('disabled',true)
+            
+            $.ajax({
+                url:"{% url 'body:welcome' %}",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    'X-CSRFToken': csrftoken
+                },
+                data: data,
+                success: (response)=> {
+                    console.log(response.message)
+                    window.location.href = 'home/'
+                },
+                error: (error)=> {
+                    console.log(error.message)
+                }
+            });
+        } else {
+            $(".toast-body").text("Password don't match")
+            $(".toast").toast("show")
+
+        }
     })
 </script>
 {% endblock javascript %}

@@ -1,9 +1,7 @@
-from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-from django.utils import timezone
 from django.conf import settings
-from django_cryptography.fields import encrypt
+# from django_cryptography.fields import encrypt
 from .choices import SEX_CHOICES
 
 
@@ -52,7 +50,7 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True
     )
-    joined_date = models.DateTimeField(default=timezone.now())
+    joined_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -82,10 +80,10 @@ class MyUser(AbstractBaseUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = encrypt(models.EmailField())
+    email = models.EmailField()
     username = models.CharField(max_length=100, unique=True)
-    age = encrypt(models.CharField(default='18', max_length=10))
-    gender = encrypt(models.CharField(max_length=20, choices=SEX_CHOICES, default="Male"))
+    age = models.CharField(default='18', max_length=10)
+    gender = models.CharField(max_length=20, choices=SEX_CHOICES, default="Male")
 
     def __str__(self):
         return self.username

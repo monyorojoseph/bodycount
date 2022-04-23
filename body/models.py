@@ -1,12 +1,11 @@
-from django.utils import timezone
 from django.db import models
 from django.conf import settings
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
-from django_cryptography.fields import encrypt
 from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 
 User = settings.AUTH_USER_MODEL
@@ -15,12 +14,12 @@ User = settings.AUTH_USER_MODEL
 # Create your models here.
 class Person(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_bodies')
-    full_name = encrypt(models.CharField(max_length=200))
-    photo = encrypt(models.ImageField(upload_to='photos'))
-    phone = encrypt(models.CharField(max_length=200))
+    full_name = models.CharField(max_length=200)
+    photo = models.ImageField(upload_to='photos')
+    phone = models.CharField(max_length=200)
     age = models.IntegerField(default=18)
     location = models.CharField(max_length=200)
-    pub_date = models.DateTimeField(default=timezone.now())
+    pub_date = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default=0, validators=[
                                    MaxValueValidator(5),
                                    MinValueValidator(0) 
@@ -49,7 +48,7 @@ class Person(models.Model):
             output.seek(0)
 
             # change the photofield value to be the newley modifed photo value
-            self.photo = InMemoryUploadedFile(output, 'photoField',
+            self.photo = InMemoryUploadedFile(output, 'ImageField',
                                             f'{self.photo.name.split(".")[0]}.jpg',
                                             'image/jpeg', sys.getsizeof(output),
                                             None)
@@ -57,11 +56,10 @@ class Person(models.Model):
         super().save(*args, **kwargs)
 
 class Review(models.Model):
-    user =  models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
+    user =  models.ForeignKey(User, models.SET_NULL, blank=True, null=True, related_name="user_reviews")
     username = models.CharField(max_length=200, null=True, blank=True)
     review_text = models.TextField()
-    pub_date = models.DateTimeField(default=timezone.now())
-    total_likes = models.IntegerField(default=0)
+    pub_date = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:

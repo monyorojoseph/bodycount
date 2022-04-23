@@ -10,9 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from email.policy import default
 from pathlib import Path
-import os
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,14 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
-
-GOOGLE_RECAPTCHA_SECRET_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY')
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -91,6 +86,7 @@ LOGIN_URL = 'users:signin'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 # sql database
+# sql database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -98,17 +94,8 @@ DATABASES = {
     }
 }
 
-# postgresql
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'bodycount',
-#         'USER': 'postgres',
-#         'PASSWORD': 'error404',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
 
 # email configuratrion
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -152,6 +139,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+STATIC_ROOT =  BASE_DIR / 'staticfiles' 
+
+
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [ 
@@ -162,38 +152,42 @@ MEDIA_URL = 'media/'
 
 MEDIA_ROOT =  BASE_DIR / 'media' 
 
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # configuring logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'loggers': {
-        'body.views': {
-            'handlers': ['info_file'],
-            'level': 'INFO',
-        },
-    },
-    'handlers': {
-        'info_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': './logs/body.log',
-            'formatter': 'verbose'
-        },
-    },
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'loggers': {
+#         'body.views': {
+#             'handlers': ['info_file'],
+#             'level': 'INFO',
+#         },
+#     },
+#     'handlers': {
+#         'info_file': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': './logs/body.log',
+#             'formatter': 'verbose'
+#         },
+#     },
 
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    }
-}
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+#     }
+# }
+
+# Activate Django-Heroku.

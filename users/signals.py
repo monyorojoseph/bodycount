@@ -27,6 +27,6 @@ def update_email_username(sender, instance, **kwargs):
     if profile.username != profile.user.username:
         profile.user.username = profile.username
         profile.user.save()
-    pass
+
 
 post_save.connect(update_email_username, sender=Profile)

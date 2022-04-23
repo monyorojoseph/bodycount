@@ -2,6 +2,8 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block title %}Home{% endblock title %}
+
 <!-- content block -->
 {% block content %}
     <section class='container'>
@@ -254,12 +256,13 @@
                     <div class="person-card">
                       <div class="card-content">
                         <img src="/media/${person.photo}" alt="${person.full_name}" />
-                          <div>
+                          <div class='mt-2'>
                               <p class="m-0"><span>age: </span>${person.age} </p>
+                              <p class="m-0"><span>Town: </span>${person.location} </p>
                               <p class="m-0"> <span>Phone: </span> ${person.phone} </p>
                               <p class="m-0"> <span>Rating: </span> ${stars(person.rating)}</p>
+                              <h5 class='text-center mt-2'> ${person.full_name} </h5>
                           </div>
-                        <h4> ${person.full_name} </h4>
                       </div
                   </div>                    
                     `
@@ -327,12 +330,13 @@
                   <div class="person-card">
                     <div class="card-content">
                       <img src="/media/${new_person.photo}" alt="${new_person.full_name}" />
-                        <div>
-                            <p class="m-0"><span>age: </span>${new_person.age} </p>
-                            <p class="m-0"> <span>Phone: </span> ${new_person.phone} </p>
-                            <p class="m-0"> <span>Rating: </span> ${new_person.rating} </p>
-                        </div>
-                      <h4> ${new_person.full_name} </h4>
+                      <div class='mt-2'>
+                        <p class="m-0"><span>age: </span>${person.age} </p>
+                        <p class="m-0"><span>Town: </span>${person.location} </p>
+                        <p class="m-0"> <span>Phone: </span> ${person.phone} </p>
+                        <p class="m-0"> <span>Rating: </span> ${stars(person.rating)}</p>
+                        <h5 class='text-center mt-2'> ${person.full_name} </h5>
+                    </div>
                     </div
                 </div>                    
                 `
@@ -341,7 +345,7 @@
 
             },
             error: (error)=> {
-                console.log(error.message)
+                console.log(error.responseJSON.message)
             }
         })
     })

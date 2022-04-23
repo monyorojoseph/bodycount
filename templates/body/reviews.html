@@ -2,6 +2,8 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block title %}Reviews{% endblock title %}
+
 {% block content %}
 <section class="container">
     <!-- posted reviews total in number post review -->
@@ -18,7 +20,10 @@
                 <form  method='post' action="" id="form" >
                     {% csrf_token %}
                     {{ form.review_text|add_class:"form-control" }}
-                    <button type="submit" id='post' class="btn btn-sm btn-primary py-1 px-3 mt-3">Post Review</button>   
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" id='post' class="btn btn-sm btn-primary py-1 px-3 mt-3 me-md-2">Post Review</button>   
+
+                      </div>
                 </form>
             </div>
         </div>
@@ -40,6 +45,7 @@
     // on load show a toast
     $(document).ready(function(){
         $("body").addClass("review")
+        $(".form-control").prop("placeholder", "Post your thoughts ...")
         $("#nav-reviews").addClass('active')
         $("#reviews").html(
             `
@@ -107,9 +113,9 @@
     $("#form").submit(function(e){
         e.preventDefault();
         $("#post").text("Posting ...")
-        let data = new FormData($(this).get(0))
+        $("#post").prop("disabled", true)
 
-        console.log(data)
+        let data = new FormData($(this).get(0))
 
         // get coookies
         function getCookie(name) {
@@ -140,11 +146,16 @@
             },
             data: data,
             success: (response)=> {
+                
+                $("#post").text("Post Review")
+                $("#post").prop("disabled", false)
+                
                 if ($(".none")){
                     $(".none").remove()
                   }
+
                 const review_data = JSON.parse(response.review)[0].fields
-                console.log(review_data)
+                
                 $("#postReviewCollapse").collapse('hide')
                 
                 $("#reviews").prepend(`
@@ -155,7 +166,9 @@
                 `) 
             },
             error: (error)=> {
-                console.log(error.message)
+                console.log(error.message)                
+                $("#post").text("Post Review")
+                $("#post").prop("disabled", false)
             }
         })
     })
